@@ -1,0 +1,12 @@
+C:\Users\Kinga\source\repos\IO_Lab1\BibliotekaKlas\bin\Debug\BibliotekaKlas.dll
+C:\Users\Kinga\source\repos\IO_Lab1\BibliotekaKlas\bin\Debug\BibliotekaKlas.pdb
+C:\Users\Kinga\source\repos\IO_Lab1\BibliotekaKlas\obj\Debug\ClassLibrary.csprojAssemblyReference.cache
+C:\Users\Kinga\source\repos\IO_Lab1\BibliotekaKlas\obj\Debug\ClassLibrary.csproj.CoreCompileInputs.cache
+C:\Users\Kinga\source\repos\IO_Lab1\BibliotekaKlas\obj\Debug\BibliotekaKlas.dll
+C:\Users\Kinga\source\repos\IO_Lab1\BibliotekaKlas\obj\Debug\BibliotekaKlas.pdb
+D:\GitHub\TCP_TicTacToe\BibliotekaKlas\bin\Debug\BibliotekaKlas.dll
+D:\GitHub\TCP_TicTacToe\BibliotekaKlas\bin\Debug\BibliotekaKlas.pdb
+D:\GitHub\TCP_TicTacToe\BibliotekaKlas\obj\Debug\ClassLibrary.csprojAssemblyReference.cache
+D:\GitHub\TCP_TicTacToe\BibliotekaKlas\obj\Debug\ClassLibrary.csproj.CoreCompileInputs.cache
+D:\GitHub\TCP_TicTacToe\BibliotekaKlas\obj\Debug\BibliotekaKlas.dll
+D:\GitHub\TCP_TicTacToe\BibliotekaKlas\obj\Debug\BibliotekaKlas.pdb

@@ -1,0 +1,10 @@
+C:\Users\Kinga\source\repos\IO_Lab1\IO_Lab1\bin\Debug\IO_Lab1.exe.config
+C:\Users\Kinga\source\repos\IO_Lab1\IO_Lab1\bin\Debug\IO_Lab1.exe
+C:\Users\Kinga\source\repos\IO_Lab1\IO_Lab1\bin\Debug\IO_Lab1.pdb
+C:\Users\Kinga\source\repos\IO_Lab1\IO_Lab1\bin\Debug\BibliotekaKlas.dll
+C:\Users\Kinga\source\repos\IO_Lab1\IO_Lab1\bin\Debug\BibliotekaKlas.pdb
+C:\Users\Kinga\source\repos\IO_Lab1\IO_Lab1\obj\Debug\IO_Lab1.csprojAssemblyReference.cache
+C:\Users\Kinga\source\repos\IO_Lab1\IO_Lab1\obj\Debug\IO_Lab1.csproj.CoreCompileInputs.cache
+C:\Users\Kinga\source\repos\IO_Lab1\IO_Lab1\obj\Debug\IO_Lab1.csproj.CopyComplete
+C:\Users\Kinga\source\repos\IO_Lab1\IO_Lab1\obj\Debug\IO_Lab1.exe
+C:\Users\Kinga\source\repos\IO_Lab1\IO_Lab1\obj\Debug\IO_Lab1.pdb

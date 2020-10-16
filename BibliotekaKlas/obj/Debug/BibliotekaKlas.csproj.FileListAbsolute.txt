@@ -1,0 +1,6 @@
+C:\Users\Kinga\source\repos\IO_Lab1\BibliotekaKlas\bin\Debug\BibliotekaKlas.dll
+C:\Users\Kinga\source\repos\IO_Lab1\BibliotekaKlas\bin\Debug\BibliotekaKlas.pdb
+C:\Users\Kinga\source\repos\IO_Lab1\BibliotekaKlas\obj\Debug\BibliotekaKlas.csprojAssemblyReference.cache
+C:\Users\Kinga\source\repos\IO_Lab1\BibliotekaKlas\obj\Debug\BibliotekaKlas.csproj.CoreCompileInputs.cache
+C:\Users\Kinga\source\repos\IO_Lab1\BibliotekaKlas\obj\Debug\BibliotekaKlas.dll
+C:\Users\Kinga\source\repos\IO_Lab1\BibliotekaKlas\obj\Debug\BibliotekaKlas.pdb
