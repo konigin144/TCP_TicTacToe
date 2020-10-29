@@ -141,10 +141,6 @@ namespace ClassLibrary
                         networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
                 }
             }
-
-            //-----  teraz nej
-            //TcpClient client2 = new TcpClient();
-            //client.Connect(IPAddress.Parse("127.0.0.1"), 2048);
         }
     }
 }
