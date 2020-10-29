@@ -1,5 +1,6 @@
 ﻿using ClassLibrary;
 using System;
+using System.Net;
 
 namespace TCPServer
 {
@@ -14,8 +15,8 @@ namespace TCPServer
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            Server server = new Server();
-            server.Run();
+            Server server = new ServerAsync(IPAddress.Parse("127.0.0.1"), 2048);
+            server.Start();
         }
     }
 }

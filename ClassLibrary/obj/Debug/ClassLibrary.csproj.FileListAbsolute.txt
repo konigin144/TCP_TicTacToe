@@ -10,3 +10,9 @@ D:\GitHub\TCP_TicTacToe\BibliotekaKlas\obj\Debug\ClassLibrary.csprojAssemblyRefe
 D:\GitHub\TCP_TicTacToe\BibliotekaKlas\obj\Debug\ClassLibrary.csproj.CoreCompileInputs.cache
 D:\GitHub\TCP_TicTacToe\BibliotekaKlas\obj\Debug\BibliotekaKlas.dll
 D:\GitHub\TCP_TicTacToe\BibliotekaKlas\obj\Debug\BibliotekaKlas.pdb
+D:\GitHub\TCP_TicTacToe\ClassLibrary\obj\Debug\ClassLibrary.csprojAssemblyReference.cache
+D:\GitHub\TCP_TicTacToe\ClassLibrary\obj\Debug\ClassLibrary.csproj.CoreCompileInputs.cache
+D:\GitHub\TCP_TicTacToe\ClassLibrary\obj\Debug\BibliotekaKlas.dll
+D:\GitHub\TCP_TicTacToe\ClassLibrary\obj\Debug\BibliotekaKlas.pdb
+D:\GitHub\TCP_TicTacToe\ClassLibrary\bin\Debug\BibliotekaKlas.dll
+D:\GitHub\TCP_TicTacToe\ClassLibrary\bin\Debug\BibliotekaKlas.pdb

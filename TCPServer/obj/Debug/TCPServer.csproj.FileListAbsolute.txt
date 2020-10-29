@@ -18,3 +18,13 @@ D:\GitHub\TCP_TicTacToe\IO_Lab1\obj\Debug\TCPServer.csproj.CoreCompileInputs.cac
 D:\GitHub\TCP_TicTacToe\IO_Lab1\obj\Debug\TCPServer.csproj.CopyComplete
 D:\GitHub\TCP_TicTacToe\IO_Lab1\obj\Debug\IO_Lab1.exe
 D:\GitHub\TCP_TicTacToe\IO_Lab1\obj\Debug\IO_Lab1.pdb
+D:\GitHub\TCP_TicTacToe\TCPServer\bin\Debug\IO_Lab1.exe.config
+D:\GitHub\TCP_TicTacToe\TCPServer\bin\Debug\IO_Lab1.exe
+D:\GitHub\TCP_TicTacToe\TCPServer\bin\Debug\IO_Lab1.pdb
+D:\GitHub\TCP_TicTacToe\TCPServer\bin\Debug\BibliotekaKlas.dll
+D:\GitHub\TCP_TicTacToe\TCPServer\bin\Debug\BibliotekaKlas.pdb
+D:\GitHub\TCP_TicTacToe\TCPServer\obj\Debug\TCPServer.csprojAssemblyReference.cache
+D:\GitHub\TCP_TicTacToe\TCPServer\obj\Debug\TCPServer.csproj.CoreCompileInputs.cache
+D:\GitHub\TCP_TicTacToe\TCPServer\obj\Debug\TCPServer.csproj.CopyComplete
+D:\GitHub\TCP_TicTacToe\TCPServer\obj\Debug\IO_Lab1.exe
+D:\GitHub\TCP_TicTacToe\TCPServer\obj\Debug\IO_Lab1.pdb
