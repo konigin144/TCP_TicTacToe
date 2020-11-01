@@ -119,7 +119,7 @@ namespace ClassLibrary
             element.Add("imie3", new Ranking(21, 37, 88));
             File.WriteAllText(@"D:\\GitHub\\TCP_TicTacToe\\ranking.json", JsonConvert.SerializeObject(element));*/
 
-            string path = "D:\\GitHub\\TCP_TicTacToe\\ranking4.json";
+            string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName+"\\ranking.json";
 
             //ladujemy plikecz
             if (!File.Exists(path))
@@ -130,7 +130,7 @@ namespace ClassLibrary
             }
             else
             {
-                using (StreamReader r = File.OpenText("D:\\GitHub\\TCP_TicTacToe\\ranking4.json"))
+                using (StreamReader r = File.OpenText(path))
                 {
                     string json = r.ReadToEnd();
                     dict = JsonConvert.DeserializeObject<Dictionary<string, Ranking>>(json);
@@ -164,7 +164,7 @@ namespace ClassLibrary
 
 
             //zapisujemy update do plikecza
-            File.WriteAllText(@"D:\\GitHub\\TCP_TicTacToe\\ranking4.json", JsonConvert.SerializeObject(dict));
+            File.WriteAllText(@path, JsonConvert.SerializeObject(dict));
 
             return dict;
             /*foreach (var e in dict)
