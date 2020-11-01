@@ -1,4 +1,9 @@
-﻿using System;
+﻿using ClassLibrary;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Web.Script.Serialization;
 
 namespace ClassLibrary
 {
@@ -77,7 +82,97 @@ namespace ClassLibrary
                 else State = 2;
                 return true;
             }
+            //else return false;
+
+            //Draw check
+            bool draw = false;
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (Grid[i, j] == ' ')
+                    {
+                        draw = false;
+                        break;
+                    }
+                    else
+                        draw = true;
+                }
+                if (!draw) break;
+            }
+            if (draw)
+            {
+                State = 3;
+                return true;
+            }
             else return false;
+        }
+
+        public Dictionary<string, Ranking> updateRanking(string username, int result)
+        {
+            List<Ranking> items;
+            Dictionary<string, Ranking> dict = new Dictionary<string, Ranking>();
+
+            Dictionary<string, Ranking> element = new Dictionary<string, Ranking>();
+            /*element.Add("imie", new Ranking(3, 4, 5));
+            element.Add("imie2", new Ranking(1, 2, 3));
+            element.Add("imie3", new Ranking(21, 37, 88));
+            File.WriteAllText(@"D:\\GitHub\\TCP_TicTacToe\\ranking.json", JsonConvert.SerializeObject(element));*/
+
+            string path = "D:\\GitHub\\TCP_TicTacToe\\ranking4.json";
+
+            //ladujemy plikecz
+            if (!File.Exists(path))
+            {
+                FileStream fs = File.Create(path);
+                dict = new Dictionary<string, Ranking>();
+                fs.Close();
+            }
+            else
+            {
+                using (StreamReader r = File.OpenText("D:\\GitHub\\TCP_TicTacToe\\ranking4.json"))
+                {
+                    string json = r.ReadToEnd();
+                    dict = JsonConvert.DeserializeObject<Dictionary<string, Ranking>>(json);
+                }
+            }
+
+            //Initialize empty dictionary
+            if (dict == null)
+                dict = new Dictionary<string, Ranking>();
+
+            //updating
+            Ranking temp;
+            if (!dict.TryGetValue(username, out temp))
+            {
+                temp = new Ranking();
+            }
+            if (result == 1)
+            {
+                temp.wins++;
+            }
+            else if (result == 2)
+            {
+                temp.loses++;
+            }
+            else if (result == 3)
+            {
+                temp.draws++;
+            }
+            dict[username] = temp;
+
+
+
+            //zapisujemy update do plikecza
+            File.WriteAllText(@"D:\\GitHub\\TCP_TicTacToe\\ranking4.json", JsonConvert.SerializeObject(dict));
+
+            return dict;
+            /*foreach (var e in dict)
+            {
+                Console.WriteLine(e.Key);
+                e.Value.print();
+            }*/
+
         }
 
         /// <summary>
@@ -100,13 +195,14 @@ namespace ClassLibrary
             Grid[x, y] = 'x';
 
             //Checks if game is finished
-            if (ifFinished()) {
+            /*if (ifFinished())
+            {
                 if (State == 0)
                     State = 3;
                 return false;
-            }
+            }*/
             //If not, set's AI's mark
-            else
+            if (!ifFinished())
             {
                 Random r = new Random();
                 int rX, rY;
@@ -122,8 +218,8 @@ namespace ClassLibrary
             //Again checks if game is finished
             if (ifFinished())
             {
-                if (State == 0)
-                    State = 3;
+                /*if (State == 0)
+                    State = 3;*/
                 return false;
             }
             return true;

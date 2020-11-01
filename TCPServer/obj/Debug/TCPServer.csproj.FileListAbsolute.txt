@@ -28,3 +28,5 @@ D:\GitHub\TCP_TicTacToe\TCPServer\obj\Debug\TCPServer.csproj.CoreCompileInputs.c
 D:\GitHub\TCP_TicTacToe\TCPServer\obj\Debug\TCPServer.csproj.CopyComplete
 D:\GitHub\TCP_TicTacToe\TCPServer\obj\Debug\IO_Lab1.exe
 D:\GitHub\TCP_TicTacToe\TCPServer\obj\Debug\IO_Lab1.pdb
+D:\GitHub\TCP_TicTacToe\TCPServer\bin\Debug\Newtonsoft.Json.dll
+D:\GitHub\TCP_TicTacToe\TCPServer\bin\Debug\Newtonsoft.Json.xml

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq.Expressions;
@@ -58,6 +59,24 @@ namespace ClassLibrary
             networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
         }
 
+        void PrintRanking(NetworkStream networkStream, Dictionary<string, Ranking> dict)
+        {
+            byte[] myWriteBuffer;
+            foreach (var element in dict)
+            {
+                myWriteBuffer = Encoding.ASCII.GetBytes(element.Key+":\n\r");
+                networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                myWriteBuffer = Encoding.ASCII.GetBytes("Wins: "+element.Value.wins.ToString()+"\n\r");
+                networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                myWriteBuffer = Encoding.ASCII.GetBytes("Loses: " + element.Value.loses.ToString()+"\n\r");
+                networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                myWriteBuffer = Encoding.ASCII.GetBytes("Draws: " + element.Value.draws.ToString()+"\n\r");
+                networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                myWriteBuffer = Encoding.ASCII.GetBytes("\n\r");
+                networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            }
+        }
+
         /// <summary>
         /// Main function, handles server and game, implements communication with user
         /// </summary>
@@ -66,10 +85,20 @@ namespace ClassLibrary
             //Buffer initialization and basic information writing
             byte[] buffer = new byte[16];
 
-            byte[] myWriteBuffer = Encoding.ASCII.GetBytes("Type column and row\r\n");
+            string username;
+
+            //User name
+            byte[] myWriteBuffer = Encoding.ASCII.GetBytes("Your name: ");
+            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            networkStream.Read(buffer, 0, buffer.Length);
+            username = Encoding.ASCII.GetString(buffer).Trim(' ');
+            username = username.Replace("\0", string.Empty);
+            //Array.Clear(buffer, 0, buffer.Length);
+            networkStream.Read(buffer, 0, buffer.Length);
+            myWriteBuffer = Encoding.ASCII.GetBytes("Hello " + username + "!\r\n");
             networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
 
-            networkStream.ReadTimeout = 10000;
+            //networkStream.ReadTimeout = 10000;
             //App loop
             while (true)
             {
@@ -81,6 +110,9 @@ namespace ClassLibrary
                     bool gameContinue = true;
                     string userInput;
                     int x, y;
+
+                    myWriteBuffer = Encoding.ASCII.GetBytes("Type column and row\r\n");
+                    networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
 
                     //Main game loop
                     while (gameContinue)
@@ -96,6 +128,7 @@ namespace ClassLibrary
                             userInput = userInput.Replace("\0", string.Empty);
                             y = userInput[0] - 49;
                             x = userInput[1] - 49;
+                            //Array.Clear(buffer, 0, buffer.Length);
                             networkStream.Read(buffer, 0, buffer.Length);
                             if (userInput.Length == 2 && x > -1 && x < 3 && y > -1 && y < 3)
                             {
@@ -134,6 +167,9 @@ namespace ClassLibrary
                         myWriteBuffer = Encoding.ASCII.GetBytes("Draw!\r\n");
                         networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
                     }
+
+                    Dictionary<string, Ranking> rankDict = game.updateRanking(username, game.State);
+                    PrintRanking(networkStream, rankDict);
 
                     //Play again question
                     while (true)

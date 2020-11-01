@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Policy;
 using System.Text;
 
 namespace ClassLibrary
@@ -57,27 +58,58 @@ namespace ClassLibrary
             networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
         }
 
+        void PrintRanking(NetworkStream networkStream, Dictionary<string, Ranking> dict)
+        {
+            byte[] myWriteBuffer;
+            foreach (var element in dict)
+            {
+                myWriteBuffer = Encoding.ASCII.GetBytes(element.Key + ":\n\r");
+                networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                myWriteBuffer = Encoding.ASCII.GetBytes("Wins: " + element.Value.wins.ToString() + "\n\r");
+                networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                myWriteBuffer = Encoding.ASCII.GetBytes("Loses: " + element.Value.loses.ToString() + "\n\r");
+                networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                myWriteBuffer = Encoding.ASCII.GetBytes("Draws: " + element.Value.draws.ToString() + "\n\r");
+                networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                myWriteBuffer = Encoding.ASCII.GetBytes("\n\r");
+                networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            }
+        }
+
         protected override void Run(NetworkStream networkStream)
         {
-            networkStream.ReadTimeout = 10000;
+            //networkStream.ReadTimeout = 10000;
             byte[] buffer = new byte[Buffer_size];
+            string userInput;
+            string username;
+
+            //User name
+            byte[] myWriteBuffer = Encoding.ASCII.GetBytes("Your name: ");
+            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            networkStream.Read(buffer, 0, buffer.Length);
+            username = Encoding.ASCII.GetString(buffer).Trim(' ');
+            username = username.Replace("\0", string.Empty);
+            //Array.Clear(buffer, 0, buffer.Length);
+            networkStream.Read(buffer, 0, buffer.Length);
+            myWriteBuffer = Encoding.ASCII.GetBytes("Hello "+username+"!\r\n");
+            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+
+            
+
             while (true)
             {
                 try
-                {
-                    /*
-                    int message_size = networkStream.Read(buffer, 0, Buffer_size);
-                    networkStream.Write(buffer, 0, message_size);*/
-                    
+                {                    
                     //Variables declaration
                     TicTacToe game = new TicTacToe();
-                    bool gameContinue = true;
-                    string userInput;
+                    bool gameContinue = true;                    
                     int x, y;
 
-                   // byte[] buffer = new byte[16];
+                    
 
-                    byte[] myWriteBuffer = Encoding.ASCII.GetBytes("Type column and row\r\n");
+                    // byte[] buffer = new byte[16];
+
+                    myWriteBuffer = Encoding.ASCII.GetBytes("Type column and row\r\n");
                     networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
 
                     //Main game loop
@@ -88,12 +120,13 @@ namespace ClassLibrary
                         //User input
                         while (true)
                         {
-                            buffer = new byte[16];
+                            buffer = new byte[Buffer_size];
                             networkStream.Read(buffer, 0, buffer.Length);
                             userInput = Encoding.ASCII.GetString(buffer).Replace(" ", "");
                             userInput = userInput.Replace("\0", string.Empty);
                             y = userInput[0] - 49;
                             x = userInput[1] - 49;
+                            //Array.Clear(buffer, 0, buffer.Length);
                             networkStream.Read(buffer, 0, buffer.Length);
                             if (userInput.Length == 2 && x > -1 && x < 3 && y > -1 && y < 3)
                             {
@@ -133,6 +166,9 @@ namespace ClassLibrary
                         networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
                     }
 
+                    Dictionary<string, Ranking> rankDict = game.updateRanking(username, game.State);
+                    PrintRanking(networkStream, rankDict);
+
                     //Play again question
                     while (true)
                     {
@@ -142,6 +178,7 @@ namespace ClassLibrary
                         networkStream.Read(buffer, 0, buffer.Length);
                         userInput = Encoding.ASCII.GetString(buffer).Replace(" ", "");
                         userInput = userInput.Replace("\0", string.Empty).ToLower();
+                        //Array.Clear(buffer, 0, buffer.Length);
                         networkStream.Read(buffer, 0, buffer.Length);
                         if (userInput == "no")
                         {
