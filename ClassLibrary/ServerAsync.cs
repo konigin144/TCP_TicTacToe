@@ -12,9 +12,11 @@ namespace ClassLibrary
     public class ServerAsync : Server
     {
         public delegate void TransmissionDataDelegate(NetworkStream stream);
-        public ServerAsync(IPAddress IP, int port) : base(IP, port)
-        {
-        }
+        public ServerAsync(IPAddress IP, int port) : base(IP, port) {}
+
+        /// <summary>
+        /// Accept clients
+        /// </summary>
         protected override void AcceptClient()
         {
             while (true)
@@ -22,23 +24,25 @@ namespace ClassLibrary
                 TcpClient tcpClient = TcpListener.AcceptTcpClient();
                 NetworkStream Stream = tcpClient.GetStream();
                 TransmissionDataDelegate transmissionDelegate = new TransmissionDataDelegate(Run);
-                //callback style
                 var id = transmissionDelegate.BeginInvoke(Stream, TransmissionCallback, tcpClient);
-                // async result style
-                //IAsyncResult result = transmissionDelegate.BeginInvoke(Stream, null, null);
-                ////operacje......
-                //while (!result.IsCompleted) ;
-                ////sprzątanie
             }
         }
 
+        /// <summary>
+        /// Closes connection with client
+        /// </summary>
+        /// <param name="ar"></param>
         private void TransmissionCallback(IAsyncResult ar)
         {
-            // sprzątanie
             TcpClient tcpClient = ar.AsyncState as TcpClient;
             tcpClient.Close();
         }
 
+        /// <summary>
+        /// Prints grid
+        /// </summary>
+        /// <param name="networkStream">NetworkStream object</param>
+        /// <param name="game">TicTacToe object</param>
         void Print(NetworkStream networkStream, TicTacToe game)
         {
             char[] row;
@@ -58,6 +62,11 @@ namespace ClassLibrary
             networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
         }
 
+        /// <summary>
+        /// Prints ranking
+        /// </summary>
+        /// <param name="networkStream">NetworkStream object</param>
+        /// <param name="dict">Dictionary including ranking</param>
         void PrintRanking(NetworkStream networkStream, Dictionary<string, Ranking> dict)
         {
             byte[] myWriteBuffer;
@@ -76,6 +85,9 @@ namespace ClassLibrary
             }
         }
 
+        /// <summary>
+        /// Main function, handles game, implements communication with user
+        /// </summary>
         protected override void Run(NetworkStream networkStream)
         {
             //networkStream.ReadTimeout = 10000;
@@ -89,12 +101,9 @@ namespace ClassLibrary
             networkStream.Read(buffer, 0, buffer.Length);
             username = Encoding.ASCII.GetString(buffer).Trim(' ');
             username = username.Replace("\0", string.Empty);
-            //Array.Clear(buffer, 0, buffer.Length);
             networkStream.Read(buffer, 0, buffer.Length);
             myWriteBuffer = Encoding.ASCII.GetBytes("Hello "+username+"!\r\n");
             networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-
-            
 
             while (true)
             {
@@ -104,10 +113,6 @@ namespace ClassLibrary
                     TicTacToe game = new TicTacToe();
                     bool gameContinue = true;                    
                     int x, y;
-
-                    
-
-                    // byte[] buffer = new byte[16];
 
                     myWriteBuffer = Encoding.ASCII.GetBytes("Type column and row\r\n");
                     networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
@@ -126,7 +131,6 @@ namespace ClassLibrary
                             userInput = userInput.Replace("\0", string.Empty);
                             y = userInput[0] - 49;
                             x = userInput[1] - 49;
-                            //Array.Clear(buffer, 0, buffer.Length);
                             networkStream.Read(buffer, 0, buffer.Length);
                             if (userInput.Length == 2 && x > -1 && x < 3 && y > -1 && y < 3)
                             {
@@ -166,7 +170,8 @@ namespace ClassLibrary
                         networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
                     }
 
-                    Dictionary<string, Ranking> rankDict = game.updateRanking(username, game.State);
+                    //Updates and prints ranking
+                    Dictionary<string, Ranking> rankDict = game.updateRanking(username);
                     PrintRanking(networkStream, rankDict);
 
                     //Play again question
@@ -178,11 +183,9 @@ namespace ClassLibrary
                         networkStream.Read(buffer, 0, buffer.Length);
                         userInput = Encoding.ASCII.GetString(buffer).Replace(" ", "");
                         userInput = userInput.Replace("\0", string.Empty).ToLower();
-                        //Array.Clear(buffer, 0, buffer.Length);
                         networkStream.Read(buffer, 0, buffer.Length);
                         if (userInput == "no")
                         {
-                            //tcpClient.Close();
                             return;
                         }
                         else if (userInput == "yes")
@@ -202,7 +205,6 @@ namespace ClassLibrary
         public override void Start()
         {
             StartListening();
-            //transmission starts within the accept function
             AcceptClient();
         }
     }

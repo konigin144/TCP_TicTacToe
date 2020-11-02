@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
+    /// <summary>
+    /// Class containing results of a player
+    /// </summary>
     public class Ranking
     {
-        //public string name;
+        #region variables
         public int wins;
         public int loses;
         public int draws;
+        #endregion
 
         public Ranking()
         {
@@ -28,6 +27,9 @@ namespace ClassLibrary
             this.draws = draws;
         }
 
+        /// <summary>
+        /// Prints results in console
+        /// </summary>
         public void print()
         {
             Console.WriteLine(wins + " " + loses + " " + draws);

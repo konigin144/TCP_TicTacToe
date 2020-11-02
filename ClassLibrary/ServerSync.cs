@@ -168,7 +168,7 @@ namespace ClassLibrary
                         networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
                     }
 
-                    Dictionary<string, Ranking> rankDict = game.updateRanking(username, game.State);
+                    Dictionary<string, Ranking> rankDict = game.updateRanking(username);
                     PrintRanking(networkStream, rankDict);
 
                     //Play again question

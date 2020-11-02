@@ -108,26 +108,26 @@ namespace ClassLibrary
             else return false;
         }
 
-        public Dictionary<string, Ranking> updateRanking(string username, int result)
+        /// <summary>
+        /// Updates ranking and saves it to the file
+        /// </summary>
+        /// <param name="username">Player name</param>
+        /// <returns>Updated ranking</returns>
+        public Dictionary<string, Ranking> updateRanking(string username/*, int result*/)
         {
-            List<Ranking> items;
             Dictionary<string, Ranking> dict = new Dictionary<string, Ranking>();
 
-            Dictionary<string, Ranking> element = new Dictionary<string, Ranking>();
-            /*element.Add("imie", new Ranking(3, 4, 5));
-            element.Add("imie2", new Ranking(1, 2, 3));
-            element.Add("imie3", new Ranking(21, 37, 88));
-            File.WriteAllText(@"D:\\GitHub\\TCP_TicTacToe\\ranking.json", JsonConvert.SerializeObject(element));*/
-
+            //Get project path
             string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName+"\\ranking.json";
 
-            //ladujemy plikecz
+            //Create a file if does not exist
             if (!File.Exists(path))
             {
                 FileStream fs = File.Create(path);
                 dict = new Dictionary<string, Ranking>();
                 fs.Close();
             }
+            //Load file to dict if the file exists
             else
             {
                 using (StreamReader r = File.OpenText(path))
@@ -137,42 +137,30 @@ namespace ClassLibrary
                 }
             }
 
-            //Initialize empty dictionary
-            if (dict == null)
-                dict = new Dictionary<string, Ranking>();
-
-            //updating
+            //Updates player's results
             Ranking temp;
             if (!dict.TryGetValue(username, out temp))
             {
                 temp = new Ranking();
             }
-            if (result == 1)
+            if (State == 1)
             {
                 temp.wins++;
             }
-            else if (result == 2)
+            else if (State == 2)
             {
                 temp.loses++;
             }
-            else if (result == 3)
+            else if (State == 3)
             {
                 temp.draws++;
             }
             dict[username] = temp;
 
-
-
-            //zapisujemy update do plikecza
+            //Saves updated ranking to the file
             File.WriteAllText(@path, JsonConvert.SerializeObject(dict));
 
             return dict;
-            /*foreach (var e in dict)
-            {
-                Console.WriteLine(e.Key);
-                e.Value.print();
-            }*/
-
         }
 
         /// <summary>
@@ -194,14 +182,7 @@ namespace ClassLibrary
             //Sets user's mark
             Grid[x, y] = 'x';
 
-            //Checks if game is finished
-            /*if (ifFinished())
-            {
-                if (State == 0)
-                    State = 3;
-                return false;
-            }*/
-            //If not, set's AI's mark
+            //Set's AI's mark
             if (!ifFinished())
             {
                 Random r = new Random();
@@ -215,14 +196,7 @@ namespace ClassLibrary
                 Grid[rX, rY] = 'o';
             }
 
-            //Again checks if game is finished
-            if (ifFinished())
-            {
-                /*if (State == 0)
-                    State = 3;*/
-                return false;
-            }
-            return true;
+            return !ifFinished();
         }
 
     }
