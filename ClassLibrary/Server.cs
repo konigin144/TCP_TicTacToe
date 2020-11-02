@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -6,141 +9,107 @@ using System.Text;
 namespace ClassLibrary
 {
     /// <summary>
-    /// Server and game handling
+    /// An abstract class for servers
     /// </summary>
-    public class Server
+    public abstract class Server
     {
-        TicTacToe game;
-        public Server()
-        {
-            game = new TicTacToe();
+        #region Fields
+        IPAddress iPAddress;
+        int port;
+        int buffer_size = 16;
+        bool running;
+        TcpListener tcpListener;
+        #endregion
 
-        }
-
+        #region Properties
         /// <summary>
-        /// Writes grid
+        /// Access to the IP address of a Server instance. Cannot be changed when the Server is running
         /// </summary>
-        /// <param name="networkStream">NetworkStream object</param>
-        /// <param name="game">TicTacToe object</param>
-        void Print(NetworkStream networkStream, TicTacToe game)
-        {
-            char[] row;
-            byte[] myWriteBuffer;
-            row = new[] { ' ', game.Grid[0, 0], ' ', '|', ' ', game.Grid[0,1], ' ', '|', ' ', game.Grid[0, 2], '\n', '\r' };
-            myWriteBuffer = Encoding.ASCII.GetBytes(row);
-            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-            myWriteBuffer = Encoding.ASCII.GetBytes("-----------\n\r");
-            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-            row = new[] { ' ', game.Grid[1, 0], ' ', '|', ' ', game.Grid[1, 1], ' ', '|', ' ', game.Grid[1, 2], '\n', '\r' };
-            myWriteBuffer = Encoding.ASCII.GetBytes(row);
-            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-            myWriteBuffer = Encoding.ASCII.GetBytes("-----------\n\r");
-            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-            row = new[] { ' ', game.Grid[2, 0], ' ', '|', ' ', game.Grid[2, 1], ' ', '|', ' ', game.Grid[2, 2], '\n', '\r' };
-            myWriteBuffer = Encoding.ASCII.GetBytes(row);
-            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-        }
+        public IPAddress IPAddress { get => iPAddress; set { if (!running) iPAddress = value; else throw new Exception("You cannot change IP address when server is running"); } }
         
         /// <summary>
-        /// Main function, handles server and game, implements communication with user
+        /// Access to the port of a server instance. Cannot be changed when the Server is running. Checks if given number can be accepted
         /// </summary>
-        public void Run()
-        {
-            //Sever setup
-            TcpListener tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), 2048);
-            tcpListener.Start();
-            TcpClient client = tcpListener.AcceptTcpClient();
-
-            //Buffers initialization and basic information writing
-            byte[] buffer = new byte[16];
-            NetworkStream networkStream = client.GetStream();
-            byte[] myWriteBuffer = Encoding.ASCII.GetBytes("Type column and row\r\n");
-            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-
-            //App loop
-            while (true)
-            {
-                //Variables declaration
-                TicTacToe game = new TicTacToe();
-                bool gameContinue = true;
-                string userInput;
-                int x, y;
-
-                //Main game loop
-                while (gameContinue)
+        public int Port { get => port; set {
+                int previous = port;
+                if (!running) port = value; else throw new Exception("You cannot change port when server is running");
+                if (!checkPort())
                 {
-                    Print(networkStream, game);
-
-                    //User input
-                    while (true)
-                    {
-                        buffer = new byte[16];
-                        networkStream.Read(buffer, 0, buffer.Length);
-                        userInput = Encoding.ASCII.GetString(buffer).Replace(" ", "");
-                        userInput = userInput.Replace("\0", string.Empty);
-                        y = userInput[0] - 49;
-                        x = userInput[1] - 49;
-                        networkStream.Read(buffer, 0, buffer.Length);
-                        if (userInput.Length == 2 && x > -1 && x < 3 && y > -1 && y < 3)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            myWriteBuffer = Encoding.ASCII.GetBytes("Wrong answer. Try again:\r\n");
-                            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-                        }
-                    }
-
-                    //Turn processing
-                    gameContinue = game.play(x, y);
-                    if (game.WrongSpace)
-                    {
-                        myWriteBuffer = Encoding.ASCII.GetBytes("Chosen space is unavailable. Try again:\r\n");
-                        networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-                    }
-                }
-
-                //Game is finished
-                Print(networkStream, game);
-                if (game.State == 1)
-                {
-                    myWriteBuffer = Encoding.ASCII.GetBytes("Player won!\r\n");
-                    networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-                }
-                else if (game.State == 2)
-                {
-                    myWriteBuffer = Encoding.ASCII.GetBytes("AI won!\r\n");
-                    networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-                }
-                else if (game.State == 3)
-                {
-                    myWriteBuffer = Encoding.ASCII.GetBytes("Draw!\r\n");
-                    networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-                }
-
-                //Play again question
-                while (true)
-                {
-                    myWriteBuffer = Encoding.ASCII.GetBytes("Do you want to play again? yes/no\r\n");
-                    networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-                    buffer = new byte[16];
-                    networkStream.Read(buffer, 0, buffer.Length);
-                    userInput = Encoding.ASCII.GetString(buffer).Replace(" ", "");
-                    userInput = userInput.Replace("\0", string.Empty).ToLower();
-                    networkStream.Read(buffer, 0, buffer.Length);
-                    if (userInput == "no")
-                    {
-                        client.Close();
-                        return;
-                    }
-                    else if (userInput == "yes")
-                        break;
-                    else
-                        myWriteBuffer = Encoding.ASCII.GetBytes("Wrong answer. Try again:\r\n");
-                        networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                    port = previous;
+                    throw new Exception("Invalid port value.");
                 }
             }
         }
+
+        /// <summary>
+        /// This property gives access to the buffer size of a server instance. Property can't be changed when the Server is running. Setting invalid size numbers will cause an exception. 
+        /// </summary>
+        public int Buffer_size
+        {
+            get => buffer_size; set
+            {
+                if (value < 0 || value > 1024 * 1024 * 64) throw new Exception("Invalid buffer size");
+                if (!running) buffer_size = value; else throw new Exception("You cannot change buffer size when server is running");
+            }
+        }
+
+        protected TcpListener TcpListener { get => tcpListener; set => tcpListener = value; }
+        //protected TcpClient TcpClient { get => tcpClient; set => tcpClient = value; }
+       // protected NetworkStream Stream { get => stream; set => stream = value; }
+        #endregion
+
+        #region Constructors
+        /// <summary>
+        /// A default constructor. It doesn't start the server. Invalid port numbers will thrown an exception.
+        /// </summary>
+        /// <param name="IP">IP address of the server instance.</param>
+        /// <param name="port">Port number of the server instance.</param>
+        public Server(IPAddress IP, int port)
+        {
+            running = false;
+            IPAddress = IP;
+            Port = port;
+            if (!checkPort())
+            {
+                Port = 2048;
+                throw new Exception("Invalid port value. 2048 was set.");
+            }
+        }
+        #endregion
+
+        #region Functions
+        /// <summary>
+        /// This function will return false if Port is set to a value lower than 1024 or higher than 49151.
+        /// </summary>
+        /// <returns>An information wether the set Port value is valid.</returns>
+        protected bool checkPort()
+        {
+            if (port < 1024 || port > 49151) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// This function starts the listener.
+        /// </summary>
+        protected void StartListening()
+        {
+            TcpListener = new TcpListener(IPAddress, Port);
+            TcpListener.Start();
+        }
+
+        /// <summary>
+        /// This function waits for the Client connection.
+        /// </summary>
+        protected abstract void AcceptClient();
+        /// <summary>
+        /// This function implements Echo and transmits the data between server and client.
+        /// </summary>
+        protected abstract void Run(NetworkStream networkStream);
+        /// <summary>
+        /// This function fires off the default server behaviour. It interrupts the program.
+        /// </summary>
+        public abstract void Start();
+        #endregion
     }
 }
+

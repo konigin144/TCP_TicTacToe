@@ -1,4 +1,9 @@
-﻿using System;
+﻿using ClassLibrary;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Web.Script.Serialization;
 
 namespace ClassLibrary
 {
@@ -77,7 +82,85 @@ namespace ClassLibrary
                 else State = 2;
                 return true;
             }
+            //else return false;
+
+            //Draw check
+            bool draw = false;
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (Grid[i, j] == ' ')
+                    {
+                        draw = false;
+                        break;
+                    }
+                    else
+                        draw = true;
+                }
+                if (!draw) break;
+            }
+            if (draw)
+            {
+                State = 3;
+                return true;
+            }
             else return false;
+        }
+
+        /// <summary>
+        /// Updates ranking and saves it to the file
+        /// </summary>
+        /// <param name="username">Player name</param>
+        /// <returns>Updated ranking</returns>
+        public Dictionary<string, Ranking> updateRanking(string username/*, int result*/)
+        {
+            Dictionary<string, Ranking> dict = new Dictionary<string, Ranking>();
+
+            //Get project path
+            string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName+"\\ranking.json";
+
+            //Create a file if does not exist
+            if (!File.Exists(path))
+            {
+                FileStream fs = File.Create(path);
+                dict = new Dictionary<string, Ranking>();
+                fs.Close();
+            }
+            //Load file to dict if the file exists
+            else
+            {
+                using (StreamReader r = File.OpenText(path))
+                {
+                    string json = r.ReadToEnd();
+                    dict = JsonConvert.DeserializeObject<Dictionary<string, Ranking>>(json);
+                }
+            }
+
+            //Updates player's results
+            Ranking temp;
+            if (!dict.TryGetValue(username, out temp))
+            {
+                temp = new Ranking();
+            }
+            if (State == 1)
+            {
+                temp.wins++;
+            }
+            else if (State == 2)
+            {
+                temp.loses++;
+            }
+            else if (State == 3)
+            {
+                temp.draws++;
+            }
+            dict[username] = temp;
+
+            //Saves updated ranking to the file
+            File.WriteAllText(@path, JsonConvert.SerializeObject(dict));
+
+            return dict;
         }
 
         /// <summary>
@@ -99,14 +182,8 @@ namespace ClassLibrary
             //Sets user's mark
             Grid[x, y] = 'x';
 
-            //Checks if game is finished
-            if (ifFinished()) {
-                if (State == 0)
-                    State = 3;
-                return false;
-            }
-            //If not, set's AI's mark
-            else
+            //Set's AI's mark
+            if (!ifFinished())
             {
                 Random r = new Random();
                 int rX, rY;
@@ -119,14 +196,7 @@ namespace ClassLibrary
                 Grid[rX, rY] = 'o';
             }
 
-            //Again checks if game is finished
-            if (ifFinished())
-            {
-                if (State == 0)
-                    State = 3;
-                return false;
-            }
-            return true;
+            return !ifFinished();
         }
 
     }
