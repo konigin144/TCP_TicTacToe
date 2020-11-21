@@ -82,7 +82,6 @@ namespace ClassLibrary
                 else State = 2;
                 return true;
             }
-            //else return false;
 
             //Draw check
             bool draw = false;
@@ -113,7 +112,7 @@ namespace ClassLibrary
         /// </summary>
         /// <param name="username">Player name</param>
         /// <returns>Updated ranking</returns>
-        public Dictionary<string, Ranking> updateRanking(string username/*, int result*/)
+        public Dictionary<string, Ranking> updateRanking(string username1, string username2)
         {
             Dictionary<string, Ranking> dict = new Dictionary<string, Ranking>();
 
@@ -139,7 +138,7 @@ namespace ClassLibrary
 
             //Updates player's results
             Ranking temp;
-            if (!dict.TryGetValue(username, out temp))
+            if (!dict.TryGetValue(username1, out temp))
             {
                 temp = new Ranking();
             }
@@ -155,7 +154,27 @@ namespace ClassLibrary
             {
                 temp.draws++;
             }
-            dict[username] = temp;
+            temp.updateRatio();
+            dict[username1] = temp;
+
+            if (!dict.TryGetValue(username2, out temp))
+            {
+                temp = new Ranking();
+            }
+            if (State == 1)
+            {
+                temp.loses++;
+            }
+            else if (State == 2)
+            {
+                temp.wins++;
+            }
+            else if (State == 3)
+            {
+                temp.draws++;
+            }
+            temp.updateRatio();
+            dict[username2] = temp;
 
             //Saves updated ranking to the file
             File.WriteAllText(@path, JsonConvert.SerializeObject(dict));
@@ -169,7 +188,7 @@ namespace ClassLibrary
         /// <param name="x">row chosen by user</param>
         /// <param name="y">column chosen by user</param>
         /// <returns>False if the game is finished. True otherwise</returns>
-        public bool play(int x, int y)
+        public bool playSingle(int x, int y)
         {
             //Checks if user has chosen a proper space
             if (Grid[x, y] != ' ')
@@ -195,6 +214,24 @@ namespace ClassLibrary
                 }
                 Grid[rX, rY] = 'o';
             }
+
+            return !ifFinished();
+        }
+
+        public bool playMulti(int player, int x, int y)
+        {
+            //Checks if user has chosen a proper space
+            if (Grid[x, y] != ' ')
+            {
+                WrongSpace = true;
+                return true;
+            }
+            else WrongSpace = false;
+
+            //Sets user's mark
+            if (player == 1)
+                Grid[x, y] = 'x';
+            else Grid[x, y] = 'o';
 
             return !ifFinished();
         }
