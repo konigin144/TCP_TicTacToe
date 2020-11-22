@@ -104,7 +104,7 @@ namespace ClassLibrary
         /// <summary>
         /// This function implements Echo and transmits the data between server and client.
         /// </summary>
-        protected abstract void Run(NetworkStream networkStream);
+        protected abstract void Run(TcpClient tcpClient);
         /// <summary>
         /// This function fires off the default server behaviour. It interrupts the program.
         /// </summary>
