@@ -12,6 +12,7 @@ namespace ClassLibrary
     class GameManager
     {
         Dictionary<TcpClient, string> waiting = new Dictionary<TcpClient, string>();
+        Dictionary<TcpClient, string> allUsers = new Dictionary<TcpClient, string>();
 
         /// <summary>
         /// Handles waiting room, connects players to game rooms
@@ -58,6 +59,7 @@ namespace ClassLibrary
                                 gameRoom.Run(ref state1, ref state2);
                                 if (!state2)
                                 {
+                                    allUsers.Remove(client2);
                                     client2.Close();
                                 }
                                 else
@@ -66,6 +68,7 @@ namespace ClassLibrary
                                 }
                                 if (!state1)
                                 {
+                                    allUsers.Remove(client1);
                                     client1.Close();
                                 }
                                 else
@@ -84,8 +87,9 @@ namespace ClassLibrary
         /// </summary>
         /// <param name="tcpClient">User object</param>
         /// <param name="username">User name</param>
-        public void addClient(TcpClient tcpClient, string username)
+        public void AddClient(TcpClient tcpClient, string username)
         {
+            allUsers.Add(tcpClient, username);
             waiting.Add(tcpClient, username);
         }
 
@@ -94,9 +98,9 @@ namespace ClassLibrary
         /// </summary>
         /// <param name="username">Player name</param>
         /// <returns></returns>
-        public bool isLogged(string username)
+        public bool IsLogged(string username)
         {
-            if (waiting.ContainsValue(username)) return true;
+            if (allUsers.ContainsValue(username)) return true;
             else return false;
         }
     }

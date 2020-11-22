@@ -38,7 +38,7 @@ namespace ClassLibrary
         /// <param name="playerNum">User number: 1 or 2</param>
         /// <param name="game">Game object</param>
         /// <returns></returns>
-        bool playerTurn(NetworkStream networkStream, int playerNum, TicTacToe game)
+        bool PlayerTurn(NetworkStream networkStream, int playerNum, TicTacToe game)
         {
             byte[] buffer = new byte[16];
             string userInput;
@@ -54,18 +54,19 @@ namespace ClassLibrary
                     networkStream.Read(buffer, 0, buffer.Length);
                     userInput = Encoding.ASCII.GetString(buffer).Replace(" ", "");
                     userInput = userInput.Replace("\0", string.Empty);
-                    y = userInput[0] - 49;
-                    x = userInput[1] - 49;
+
                     networkStream.Read(buffer, 0, buffer.Length);
-                    if (userInput.Length == 2 && x > -1 && x < 3 && y > -1 && y < 3)
+                    if (userInput.Length == 2)
                     {
-                        break;
+                        y = userInput[0] - 49;
+                        x = userInput[1] - 49;
+                        if (x > -1 && x < 3 && y > -1 && y < 3)
+                        {
+                            break;
+                        }
                     }
-                    else
-                    {
-                        myWriteBuffer = Encoding.ASCII.GetBytes("Wrong answer. Try again:\r\n");
-                        networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-                    }
+                    myWriteBuffer = Encoding.ASCII.GetBytes("Wrong answer. Try again:\r\n");
+                    networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
                 }
 
                 //Turn processing
@@ -88,10 +89,10 @@ namespace ClassLibrary
         /// Handles player's waiting for turn
         /// </summary>
         /// <param name="networkStream">User stream</param>
-        void waiting(NetworkStream networkStream)
+        void Waiting(NetworkStream networkStream)
         {
             byte[] buffer = new byte[16];
-            while (!turnFinishedFlag) {}
+            while (!turnFinishedFlag) { }
             while (networkStream.DataAvailable)
             {
                 networkStream.Read(buffer, 0, buffer.Length);
@@ -105,7 +106,7 @@ namespace ClassLibrary
         /// <param name="networkStream">User stream</param>
         /// <param name="x">Question type: true if about disconnecting, false if about playing with the same opponent</param>
         /// <returns></returns>
-        bool playAgain(NetworkStream networkStream, bool x)
+        bool PlayAgain(NetworkStream networkStream, bool x)
         {
             byte[] myWriteBuffer;
             byte[] buffer = new byte[16];
@@ -199,8 +200,8 @@ namespace ClassLibrary
             byte[] buffer = new byte[16];
             byte[] myWriteBuffer;
 
-            TurnDelegate turnDelegate = new TurnDelegate(playerTurn);
-            WaitDelegate waitDelegate = new WaitDelegate(waiting);
+            TurnDelegate turnDelegate = new TurnDelegate(PlayerTurn);
+            WaitDelegate waitDelegate = new WaitDelegate(Waiting);
 
             while (true)
             {
@@ -220,7 +221,7 @@ namespace ClassLibrary
                     while (true)
                     {
                         Print(networkStream1, game);
-                        Print(networkStream2, game);                        
+                        Print(networkStream2, game);
 
                         myWriteBuffer = Encoding.ASCII.GetBytes("Type column and row\r\n");
                         networkStream1.Write(myWriteBuffer, 0, myWriteBuffer.Length);
@@ -285,34 +286,34 @@ namespace ClassLibrary
                     PrintRanking(networkStream2, rankDict);
 
                     //Play again question
-                    PlayAgainDelegate playAgain1 = new PlayAgainDelegate(playAgain);
-                    PlayAgainDelegate playAgain2 = new PlayAgainDelegate(playAgain);
+                    PlayAgainDelegate playAgain1 = new PlayAgainDelegate(PlayAgain);
+                    PlayAgainDelegate playAgain2 = new PlayAgainDelegate(PlayAgain);
                     var id = playAgain1.BeginInvoke(networkStream1, true, null, null);
                     var id2 = playAgain2.BeginInvoke(networkStream2, true, null, null);
                     bool pa1 = playAgain1.EndInvoke(id);
                     bool pa2 = playAgain2.EndInvoke(id2);
 
-                    if(pa1&&pa2)
+                    if (pa1 && pa2)
                     {
                         id = playAgain1.BeginInvoke(networkStream1, false, null, null);
                         id2 = playAgain2.BeginInvoke(networkStream2, false, null, null);
                         pa1 = playAgain1.EndInvoke(id);
                         pa2 = playAgain2.EndInvoke(id2);
 
-                        if (!(pa1&&pa2))
+                        if (!(pa1 && pa2))
                         {
                             state1 = true;
                             state2 = true;
                             return;
                         }
                     }
-                    else if(pa1&&!pa2)
+                    else if (pa1 && !pa2)
                     {
                         state1 = true;
                         state2 = false;
                         return;
                     }
-                    else if (!pa1&&pa2)
+                    else if (!pa1 && pa2)
                     {
                         state1 = false;
                         state2 = true;

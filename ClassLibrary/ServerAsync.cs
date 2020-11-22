@@ -53,7 +53,7 @@ namespace ClassLibrary
             {
                 myWriteBuffer = Encoding.ASCII.GetBytes("Your name: ");
                 networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-                
+
                 networkStream.Read(buffer, 0, buffer.Length);
                 username = Encoding.ASCII.GetString(buffer).Trim(' ');
                 username = username.Replace("\0", string.Empty);
@@ -89,12 +89,12 @@ namespace ClassLibrary
 
                     AskGameType(tcpClient, ref gameType);
                     if (!gameType)
-                        gameManager.addClient(tcpClient, username);
+                        gameManager.AddClient(tcpClient, username);
                     else
                     {
-                        RunBot(tcpClient);
-                    }    
-                       return;
+                        Run(tcpClient);
+                    }
+                    return;
                 }
                 else
                 {
@@ -107,24 +107,33 @@ namespace ClassLibrary
                     string input = Encoding.ASCII.GetString(buffer);
                     input = input.Replace("\0", string.Empty);
                     networkStream.Read(buffer, 0, buffer.Length);
-                    if (temp.password == input)
-                    {
-                        myWriteBuffer = Encoding.ASCII.GetBytes("You've logged in!\r\n");
-                        networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
 
-                        AskGameType(tcpClient, ref gameType);
-                        if(!gameType)
-                            gameManager.addClient(tcpClient, username);
-                        else
-                        {
-                            RunBot(tcpClient);
-                        }
-                        return;
+                    if (gameManager.IsLogged(username))
+                    {
+                        myWriteBuffer = Encoding.ASCII.GetBytes("This user is already logged in!\r\n");
+                        networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
                     }
                     else
                     {
-                        myWriteBuffer = Encoding.ASCII.GetBytes("Wrong password!\r\n");
-                        networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                        if (temp.password == input)
+                        {
+                            myWriteBuffer = Encoding.ASCII.GetBytes("You've logged in!\r\n");
+                            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+
+                            AskGameType(tcpClient, ref gameType);
+                            if (!gameType)
+                                gameManager.AddClient(tcpClient, username);
+                            else
+                            {
+                                Run(tcpClient);
+                            }
+                            return;
+                        }
+                        else
+                        {
+                            myWriteBuffer = Encoding.ASCII.GetBytes("Wrong password!\r\n");
+                            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                        }
                     }
                 }
             }
@@ -203,7 +212,7 @@ namespace ClassLibrary
         /// Handles game for user and bot
         /// </summary>
         /// <param name="tcpClient">User object</param>
-        protected void RunBot(TcpClient tcpClient)
+        protected override void Run(TcpClient tcpClient)
         {
             NetworkStream networkStream = tcpClient.GetStream();
             byte[] buffer = new byte[Buffer_size];
@@ -235,22 +244,24 @@ namespace ClassLibrary
                         //User input
                         while (true)
                         {
-                            buffer = new byte[Buffer_size];
+                            buffer = new byte[16];
                             networkStream.Read(buffer, 0, buffer.Length);
                             userInput = Encoding.ASCII.GetString(buffer).Replace(" ", "");
                             userInput = userInput.Replace("\0", string.Empty);
-                            y = userInput[0] - 49;
-                            x = userInput[1] - 49;
+
                             networkStream.Read(buffer, 0, buffer.Length);
-                            if (userInput.Length == 2 && x > -1 && x < 3 && y > -1 && y < 3)
+                            if (userInput.Length == 2)
                             {
-                                break;
+                                y = userInput[0] - 49;
+                                x = userInput[1] - 49;
+                                if (x > -1 && x < 3 && y > -1 && y < 3)
+                                {
+                                    break;
+                                }
                             }
-                            else
-                            {
-                                myWriteBuffer = Encoding.ASCII.GetBytes("Wrong answer. Try again:\r\n");
-                                networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-                            }
+                            myWriteBuffer = Encoding.ASCII.GetBytes("Wrong answer. Try again:\r\n");
+                            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+
                         }
 
                         //Turn processing
@@ -313,8 +324,8 @@ namespace ClassLibrary
             }
         }
 
-        protected override void Run(NetworkStream networkStream) { }
-        
+        //protected override void Run(NetworkStream networkStream) { }
+
         /// <summary>
         /// Starts server
         /// </summary>
