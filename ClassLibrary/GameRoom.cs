@@ -212,6 +212,10 @@ namespace ClassLibrary
                     myWriteBuffer = Encoding.ASCII.GetBytes("\r\n");
                     networkStream1.Write(myWriteBuffer, 0, myWriteBuffer.Length);
                     networkStream2.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                    myWriteBuffer = Encoding.ASCII.GetBytes("You are playing with "+username2+"\r\n");
+                    networkStream1.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                    myWriteBuffer = Encoding.ASCII.GetBytes("You are playing with "+username1+ "\r\n");
+                    networkStream2.Write(myWriteBuffer, 0, myWriteBuffer.Length);
                     myWriteBuffer = Encoding.ASCII.GetBytes("You are playing as x\r\n");
                     networkStream1.Write(myWriteBuffer, 0, myWriteBuffer.Length);
                     myWriteBuffer = Encoding.ASCII.GetBytes("You are playing as o\r\n");
