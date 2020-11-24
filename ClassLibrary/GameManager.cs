@@ -60,6 +60,8 @@ namespace ClassLibrary
                                 if (!state2)
                                 {
                                     allUsers.Remove(client2);
+                                    byte[] myWriteBuffer = Encoding.ASCII.GetBytes("\\exit");
+                                    client2.GetStream().Write(myWriteBuffer, 0, myWriteBuffer.Length);
                                     client2.Close();
                                 }
                                 else
@@ -68,6 +70,8 @@ namespace ClassLibrary
                                 }
                                 if (!state1)
                                 {
+                                    byte[] myWriteBuffer = Encoding.ASCII.GetBytes("\\exit");
+                                    client1.GetStream().Write(myWriteBuffer, 0, myWriteBuffer.Length);
                                     allUsers.Remove(client1);
                                     client1.Close();
                                 }

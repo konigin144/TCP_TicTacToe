@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCPServer", "TCPServer\TCPS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary", "ClassLibrary\ClassLibrary.csproj", "{AA1D62A3-776A-4514-8044-53D0089B9637}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientConsole", "ClientConsole\ClientConsole.csproj", "{92182256-95FA-4CFB-8B3A-92913B2F335F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{AA1D62A3-776A-4514-8044-53D0089B9637}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA1D62A3-776A-4514-8044-53D0089B9637}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA1D62A3-776A-4514-8044-53D0089B9637}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92182256-95FA-4CFB-8B3A-92913B2F335F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92182256-95FA-4CFB-8B3A-92913B2F335F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92182256-95FA-4CFB-8B3A-92913B2F335F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92182256-95FA-4CFB-8B3A-92913B2F335F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

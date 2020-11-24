@@ -1,0 +1,7 @@
+D:\GitHub\TCP_TicTacToe\ClientConsole\obj\Debug\ClientConsole.csprojAssemblyReference.cache
+D:\GitHub\TCP_TicTacToe\ClientConsole\obj\Debug\ClientConsole.csproj.CoreCompileInputs.cache
+D:\GitHub\TCP_TicTacToe\ClientConsole\bin\Debug\ClientConsole.exe.config
+D:\GitHub\TCP_TicTacToe\ClientConsole\bin\Debug\ClientConsole.exe
+D:\GitHub\TCP_TicTacToe\ClientConsole\bin\Debug\ClientConsole.pdb
+D:\GitHub\TCP_TicTacToe\ClientConsole\obj\Debug\ClientConsole.exe
+D:\GitHub\TCP_TicTacToe\ClientConsole\obj\Debug\ClientConsole.pdb

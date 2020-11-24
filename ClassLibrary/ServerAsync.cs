@@ -57,7 +57,7 @@ namespace ClassLibrary
                 networkStream.Read(buffer, 0, buffer.Length);
                 username = Encoding.ASCII.GetString(buffer).Trim(' ');
                 username = username.Replace("\0", string.Empty);
-                networkStream.Read(buffer, 0, buffer.Length);
+                //networkStream.Read(buffer, 0, buffer.Length);
 
                 Dictionary<string, Ranking> dict = new Dictionary<string, Ranking>();
                 string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + "\\ranking.json";
@@ -79,7 +79,7 @@ namespace ClassLibrary
                     password = password.Replace("\0", string.Empty);
                     temp = new Ranking(password);
 
-                    networkStream.Read(buffer, 0, buffer.Length);
+                    //networkStream.Read(buffer, 0, buffer.Length);
 
                     dict[username] = temp;
                     File.WriteAllText(@path, JsonConvert.SerializeObject(dict));
@@ -106,7 +106,7 @@ namespace ClassLibrary
                     networkStream.Read(buffer, 0, buffer.Length);
                     string input = Encoding.ASCII.GetString(buffer);
                     input = input.Replace("\0", string.Empty);
-                    networkStream.Read(buffer, 0, buffer.Length);
+                    //networkStream.Read(buffer, 0, buffer.Length);
 
                     if (gameManager.IsLogged(username))
                     {
@@ -189,7 +189,7 @@ namespace ClassLibrary
                 networkStream.Read(buffer, 0, buffer.Length);
                 userInput = Encoding.ASCII.GetString(buffer).Replace(" ", "");
                 userInput = userInput.Replace("\0", string.Empty).ToLower();
-                networkStream.Read(buffer, 0, buffer.Length);
+                //networkStream.Read(buffer, 0, buffer.Length);
                 if (userInput == "single")
                 {
                     gameType = true;
@@ -249,7 +249,7 @@ namespace ClassLibrary
                             userInput = Encoding.ASCII.GetString(buffer).Replace(" ", "");
                             userInput = userInput.Replace("\0", string.Empty);
 
-                            networkStream.Read(buffer, 0, buffer.Length);
+                            //networkStream.Read(buffer, 0, buffer.Length);
                             if (userInput.Length == 2)
                             {
                                 y = userInput[0] - 49;
@@ -304,9 +304,11 @@ namespace ClassLibrary
                         networkStream.Read(buffer, 0, buffer.Length);
                         userInput = Encoding.ASCII.GetString(buffer).Replace(" ", "");
                         userInput = userInput.Replace("\0", string.Empty).ToLower();
-                        networkStream.Read(buffer, 0, buffer.Length);
+                        //networkStream.Read(buffer, 0, buffer.Length);
                         if (userInput == "no")
                         {
+                            myWriteBuffer = Encoding.ASCII.GetBytes("exit");
+                            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
                             tcpClient.Close();
                             return;
                         }
