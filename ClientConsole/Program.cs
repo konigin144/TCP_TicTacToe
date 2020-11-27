@@ -35,8 +35,8 @@ namespace ClientConsole
                     Console.WriteLine("Connected chyba");
                     //NetworkStream networkStream = tcpClient.GetStream();
 
-                    CommunicationDelegate receiveDelegate = new CommunicationDelegate(receive);
-                    CommunicationDelegate sendDelegate = new CommunicationDelegate(send);
+                    CommunicationDelegate receiveDelegate = new CommunicationDelegate(Receive);
+                    CommunicationDelegate sendDelegate = new CommunicationDelegate(Send);
 
                     Parallel.Invoke(
                         () => receiveDelegate.Invoke(tcpClient),
@@ -72,7 +72,7 @@ namespace ClientConsole
             }
         }
 
-        public static void receive(TcpClient tcpClient)
+        public static void Receive(TcpClient tcpClient)
         {
             while (true)
             {
@@ -96,7 +96,7 @@ namespace ClientConsole
 
         }
 
-        public static void send(TcpClient tcpClient)
+        public static void Send(TcpClient tcpClient)
         {
             // TODO: disconnect
             while (true)

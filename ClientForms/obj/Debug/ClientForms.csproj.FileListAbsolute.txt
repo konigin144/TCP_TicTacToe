@@ -1,0 +1,12 @@
+D:\GitHub\TCP_TicTacToe\ClientForms\bin\Debug\ClientForms.exe.config
+D:\GitHub\TCP_TicTacToe\ClientForms\bin\Debug\ClientForms.exe
+D:\GitHub\TCP_TicTacToe\ClientForms\bin\Debug\ClientForms.pdb
+D:\GitHub\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.csprojAssemblyReference.cache
+D:\GitHub\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.ChooseForm.resources
+D:\GitHub\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.GameForm.resources
+D:\GitHub\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.LoginForm.resources
+D:\GitHub\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.Properties.Resources.resources
+D:\GitHub\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.csproj.GenerateResource.cache
+D:\GitHub\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.csproj.CoreCompileInputs.cache
+D:\GitHub\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.exe
+D:\GitHub\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.pdb
