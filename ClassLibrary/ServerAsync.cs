@@ -111,15 +111,38 @@ namespace ClassLibrary
             byte[] buffer = new byte[16];
             string userInput;
 
-            networkStream.Read(buffer, 0, buffer.Length);
-            userInput = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty);
-            if (userInput == "single")
+            
+            while (true)
             {
-                RunForms(tcpClient);
-            }
-            if (userInput == "multi")
-            {
-                gameManager.AddClient(tcpClient, username);
+                networkStream.Read(buffer, 0, buffer.Length);
+                userInput = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty);
+                if (userInput == "single")
+                {
+                    RunForms(tcpClient);
+                    return;
+                }
+                else if (userInput == "multi")
+                {
+                    gameManager.AddClient(tcpClient, username);
+                    return;
+                }
+                if (userInput == "rank")
+                {
+                    Dictionary<string, Ranking> dict = new Dictionary<string, Ranking>();
+                    string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + "\\ranking.json";
+                    using (StreamReader r = File.OpenText(path))
+                    {
+                        string json = r.ReadToEnd();
+                        dict = JsonConvert.DeserializeObject<Dictionary<string, Ranking>>(json);
+                    }
+                    string output = "Username\tWins\tLoses\tDraws\tRatio\n";
+                    foreach (KeyValuePair<string, Ranking> entry in dict)
+                    {
+                        output += entry.Key + "\t\t" + entry.Value.wins + "\t" + entry.Value.loses + "\t" + entry.Value.draws + "\t" + entry.Value.ratio + "\n";
+                    }
+                    byte[] myWriteBuffer = Encoding.ASCII.GetBytes(output);
+                    networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                }
             }
         }
         protected void RunForms(TcpClient tcpClient)

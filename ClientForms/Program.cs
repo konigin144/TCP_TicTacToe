@@ -17,12 +17,11 @@ namespace ClientForms
         static void Main()
         {
             IPEndPoint remoteEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 2048);
-            TcpClient tcpClient = new TcpClient();
-            tcpClient.Connect(remoteEP);
+            Client client = new Client(new TcpClient(), remoteEP);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new LoginForm(tcpClient));
+            Application.Run(new MainForm(client));
             Application.Exit();
         }
     }

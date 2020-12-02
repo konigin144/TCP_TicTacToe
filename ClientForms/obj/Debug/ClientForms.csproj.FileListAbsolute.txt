@@ -10,3 +10,6 @@ D:\GitHub\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.csproj.GenerateResourc
 D:\GitHub\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.csproj.CoreCompileInputs.cache
 D:\GitHub\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.exe
 D:\GitHub\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.pdb
+D:\GitHub\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.GameMultiForm.resources
+D:\GitHub\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.WaitingForm.resources
+D:\GitHub\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.MainForm.resources

@@ -13,14 +13,14 @@ namespace ClientForms
 {
     public partial class LoginForm : Form
     {
-        TcpClient tcpClient;
-        NetworkStream networkStream;
+        Client client;
+        MainForm mainForm;
         bool registerMode = false;
-        public LoginForm(TcpClient tcpClient)
+        public LoginForm(Client client, MainForm mainForm)
         {
             InitializeComponent();
-            this.tcpClient = tcpClient;
-            networkStream = tcpClient.GetStream();
+            this.client = client;
+            this.mainForm = mainForm;
         }
 
         private void loginButton_Click(object sender, EventArgs e)
@@ -30,16 +30,21 @@ namespace ClientForms
             else mode = "login";
             string usernamePassword = mode + " " + usernameBox.Text + " " + passwordBox.Text;
             byte[] myWriteBuffer = Encoding.ASCII.GetBytes(usernamePassword);
-            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
 
             byte[] buffer = new byte[16];
 
-            networkStream.Read(buffer, 0, buffer.Length);
+            client.networkStream.Read(buffer, 0, buffer.Length);
             string response = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty);
             if (response == "1")
             {
-                this.Hide();
-                ChooseForm chooseForm = new ChooseForm(tcpClient);
+                
+                ChooseForm chooseForm = new ChooseForm(client, mainForm);
+                chooseForm.TopLevel = false;
+                mainForm.panel1.Controls.Clear();
+                mainForm.panel1.Controls.Add(chooseForm);
+                chooseForm.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+                chooseForm.Dock = DockStyle.Fill;
                 chooseForm.Show();
             }
         }
