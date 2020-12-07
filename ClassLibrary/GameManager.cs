@@ -70,7 +70,6 @@ namespace ClassLibrary
 
         void RoomManagement(GameRoom gameRoom, TcpClient client1, TcpClient client2, string clientname1, string clientname2)
         {
-            Console.WriteLine("management");
             bool state1 = false, state2 = false;
             RoomDelegate run2 = new RoomDelegate(gameRoom.Run2);
             var id = run2.BeginInvoke(ref state1, ref state2, null, null);

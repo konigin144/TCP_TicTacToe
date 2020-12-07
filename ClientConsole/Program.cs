@@ -32,7 +32,7 @@ namespace ClientConsole
                 try
                 {
                     tcpClient.Connect(remoteEP);
-                    Console.WriteLine("Connected chyba");
+                    Console.WriteLine("Connected");
                     //NetworkStream networkStream = tcpClient.GetStream();
 
                     CommunicationDelegate receiveDelegate = new CommunicationDelegate(Receive);
@@ -98,7 +98,6 @@ namespace ClientConsole
 
         public static void Send(TcpClient tcpClient)
         {
-            // TODO: disconnect
             while (true)
             {
                 string input = Console.ReadLine();
