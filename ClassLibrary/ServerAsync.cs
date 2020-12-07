@@ -15,8 +15,9 @@ namespace ClassLibrary
     {
         public delegate void LoginDelegate(TcpClient tcpClient, ref string username, ref bool gameType);
         public delegate void StartDelegate();
+        public delegate void LoginDelegate2(TcpClient tcpClient);
 
-        public ServerAsync(IPAddress IP, int port) : base(IP, port) { }
+        public ServerAsync(string IP, int port) : base(IP, port) { }
 
         GameManager gameManager = new GameManager();
 
@@ -30,8 +31,198 @@ namespace ClassLibrary
                 TcpClient tcpClient = TcpListener.AcceptTcpClient();
                 string username = "";
                 bool gameType = false;
-                LoginDelegate LoginDelegate = new LoginDelegate(Login);
-                LoginDelegate.BeginInvoke(tcpClient, ref username, ref gameType, null, null);
+                /*LoginDelegate LoginDelegate = new LoginDelegate(Login);
+                LoginDelegate.BeginInvoke(tcpClient, ref username, ref gameType, null, null);*/
+                LoginDelegate2 LoginDelegate2 = new LoginDelegate2(LoginForms);
+                LoginDelegate2.BeginInvoke(tcpClient, null, null);
+            }
+        }
+
+        void LoginForms(TcpClient tcpClient)
+        {
+            NetworkStream networkStream = tcpClient.GetStream();
+
+            while (true)
+            {
+                byte[] buffer = new byte[128];
+                byte[] myWriteBuffer;
+                networkStream.Read(buffer, 0, buffer.Length);
+                string usernamePassword = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty);
+                string mode = usernamePassword.Split(' ')[0];
+                string username = usernamePassword.Split(' ')[1];
+                string password = usernamePassword.Split(' ')[2];
+
+                Dictionary<string, Ranking> dict = new Dictionary<string, Ranking>();
+                string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + "\\ranking.json";
+                using (StreamReader r = File.OpenText(path))
+                {
+                    string json = r.ReadToEnd();
+                    dict = JsonConvert.DeserializeObject<Dictionary<string, Ranking>>(json);
+                }
+                Ranking temp;
+                if (mode == "login")
+                {
+                    if (dict.TryGetValue(username, out temp))
+                    {
+                        if (temp.password == password)
+                        {
+                            myWriteBuffer = Encoding.ASCII.GetBytes("1");
+                            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+
+                            AskGameType2(tcpClient, username);
+                            return;
+                        }
+                        else
+                        {
+                            myWriteBuffer = Encoding.ASCII.GetBytes("0");
+                            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                        }
+                    }
+                    else
+                    {
+                        myWriteBuffer = Encoding.ASCII.GetBytes("0");
+                        networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                    }
+                }
+                else
+                {
+                    if (!dict.TryGetValue(username, out temp))
+                    {
+                        temp = new Ranking(password);
+                        dict[username] = temp;
+                        File.WriteAllText(@path, JsonConvert.SerializeObject(dict));
+                        myWriteBuffer = Encoding.ASCII.GetBytes("1");
+                        networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+
+                        AskGameType2(tcpClient, username);
+                        return;
+                    }
+                    else
+                    {
+                        myWriteBuffer = Encoding.ASCII.GetBytes("0");
+                        networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                    }
+                }
+            }
+        }
+        void AskGameType2(TcpClient tcpClient, string username)
+        {
+            NetworkStream networkStream = tcpClient.GetStream();
+            byte[] buffer = new byte[16];
+            string userInput;
+
+            
+            while (true)
+            {
+                networkStream.Read(buffer, 0, buffer.Length);
+                userInput = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty);
+                if (userInput == "single")
+                {
+                    RunForms(tcpClient);
+                    return;
+                }
+                else if (userInput == "multi")
+                {
+                    gameManager.AddClient(tcpClient, username);
+                    return;
+                }
+                if (userInput == "rank")
+                {
+                    Dictionary<string, Ranking> dict = new Dictionary<string, Ranking>();
+                    string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + "\\ranking.json";
+                    using (StreamReader r = File.OpenText(path))
+                    {
+                        string json = r.ReadToEnd();
+                        dict = JsonConvert.DeserializeObject<Dictionary<string, Ranking>>(json);
+                    }
+                    string output = "Username\tWins\tLoses\tDraws\tRatio\n";
+                    foreach (KeyValuePair<string, Ranking> entry in dict)
+                    {
+                        output += entry.Key + "\t\t" + entry.Value.wins + "\t" + entry.Value.loses + "\t" + entry.Value.draws + "\t" + entry.Value.ratio + "\n";
+                    }
+                    byte[] myWriteBuffer = Encoding.ASCII.GetBytes(output);
+                    networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                }
+            }
+        }
+        protected void RunForms(TcpClient tcpClient)
+        {
+            NetworkStream networkStream = tcpClient.GetStream();
+            byte[] buffer;
+            string userInput;
+
+            byte[] myWriteBuffer;
+
+            while (true)
+            {
+                try
+                {
+                    //Variables declaration
+                    TicTacToe game = new TicTacToe();
+                    bool gameContinue = true;
+                    int x, y, botX = 0, botY = 0;
+
+                    //Main game loop
+                    while (gameContinue)
+                    {
+                        //User input
+                        buffer = new byte[16];
+                        networkStream.Read(buffer, 0, buffer.Length);
+                        userInput = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty);
+
+                        x = userInput[0] - 48;
+                        y = userInput[2] - 48;
+
+                        //Turn processing
+                        gameContinue = game.playSingle(x, y, ref botX, ref botY);
+                        if (gameContinue)
+                        {
+                            //kordy bota
+                            string msg = "0 " + botX + " " + botY;
+                            myWriteBuffer = Encoding.ASCII.GetBytes(msg);
+                            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                        }
+
+                        if (game.WrongSpace)
+                        {
+                            myWriteBuffer = Encoding.ASCII.GetBytes("Chosen space is unavailable. Try again:\r\n");
+                            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                        }
+                    }
+
+                    //Game is finished
+                    if (game.State == 1)
+                    {
+                        myWriteBuffer = Encoding.ASCII.GetBytes("1 1");
+                        networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                    }
+                    else if (game.State == 2)
+                    {
+                        myWriteBuffer = Encoding.ASCII.GetBytes("1 2 " + botX + " " + botY);
+                        networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                    }
+                    else if (game.State == 3)
+                    {
+                        myWriteBuffer = Encoding.ASCII.GetBytes("1 3 " + botX + " " + botY);
+                        networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                    }
+
+                    //Play again question
+                    buffer = new byte[16];
+                    networkStream.Read(buffer, 0, buffer.Length);
+                    userInput = Encoding.ASCII.GetString(buffer).Replace(" ", "");
+                    userInput = userInput.Replace("\0", string.Empty).ToLower();
+
+                    if (userInput == "0")
+                    {
+                        tcpClient.Close();
+                        return;
+                    }
+                }
+                catch (IOException e)
+                {
+                    break;
+                }
             }
         }
 
@@ -57,7 +248,7 @@ namespace ClassLibrary
                 networkStream.Read(buffer, 0, buffer.Length);
                 username = Encoding.ASCII.GetString(buffer).Trim(' ');
                 username = username.Replace("\0", string.Empty);
-                networkStream.Read(buffer, 0, buffer.Length);
+                //networkStream.Read(buffer, 0, buffer.Length);
 
                 Dictionary<string, Ranking> dict = new Dictionary<string, Ranking>();
                 string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + "\\ranking.json";
@@ -79,7 +270,7 @@ namespace ClassLibrary
                     password = password.Replace("\0", string.Empty);
                     temp = new Ranking(password);
 
-                    networkStream.Read(buffer, 0, buffer.Length);
+                    //networkStream.Read(buffer, 0, buffer.Length);
 
                     dict[username] = temp;
                     File.WriteAllText(@path, JsonConvert.SerializeObject(dict));
@@ -106,7 +297,7 @@ namespace ClassLibrary
                     networkStream.Read(buffer, 0, buffer.Length);
                     string input = Encoding.ASCII.GetString(buffer);
                     input = input.Replace("\0", string.Empty);
-                    networkStream.Read(buffer, 0, buffer.Length);
+                    //networkStream.Read(buffer, 0, buffer.Length);
 
                     if (gameManager.IsLogged(username))
                     {
@@ -189,7 +380,7 @@ namespace ClassLibrary
                 networkStream.Read(buffer, 0, buffer.Length);
                 userInput = Encoding.ASCII.GetString(buffer).Replace(" ", "");
                 userInput = userInput.Replace("\0", string.Empty).ToLower();
-                networkStream.Read(buffer, 0, buffer.Length);
+                //networkStream.Read(buffer, 0, buffer.Length);
                 if (userInput == "single")
                 {
                     gameType = true;
@@ -212,6 +403,8 @@ namespace ClassLibrary
         /// Handles game for user and bot
         /// </summary>
         /// <param name="tcpClient">User object</param>
+        /// 
+
         protected override void Run(TcpClient tcpClient)
         {
             NetworkStream networkStream = tcpClient.GetStream();
@@ -249,7 +442,7 @@ namespace ClassLibrary
                             userInput = Encoding.ASCII.GetString(buffer).Replace(" ", "");
                             userInput = userInput.Replace("\0", string.Empty);
 
-                            networkStream.Read(buffer, 0, buffer.Length);
+                            //networkStream.Read(buffer, 0, buffer.Length);
                             if (userInput.Length == 2)
                             {
                                 y = userInput[0] - 49;
@@ -263,9 +456,9 @@ namespace ClassLibrary
                             networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
 
                         }
-
+                        int rx = 0, ry = 0;
                         //Turn processing
-                        gameContinue = game.playSingle(x, y);
+                        gameContinue = game.playSingle(x, y, ref rx, ref ry);
                         if (game.WrongSpace)
                         {
                             myWriteBuffer = Encoding.ASCII.GetBytes("Chosen space is unavailable. Try again:\r\n");
@@ -304,9 +497,11 @@ namespace ClassLibrary
                         networkStream.Read(buffer, 0, buffer.Length);
                         userInput = Encoding.ASCII.GetString(buffer).Replace(" ", "");
                         userInput = userInput.Replace("\0", string.Empty).ToLower();
-                        networkStream.Read(buffer, 0, buffer.Length);
+                        //networkStream.Read(buffer, 0, buffer.Length);
                         if (userInput == "no")
                         {
+                            myWriteBuffer = Encoding.ASCII.GetBytes("exit");
+                            networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
                             tcpClient.Close();
                             return;
                         }
@@ -323,6 +518,8 @@ namespace ClassLibrary
                 }
             }
         }
+
+
 
         //protected override void Run(NetworkStream networkStream) { }
 

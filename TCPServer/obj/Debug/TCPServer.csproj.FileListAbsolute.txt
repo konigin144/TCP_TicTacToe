@@ -30,3 +30,15 @@ D:\GitHub\TCP_TicTacToe\TCPServer\obj\Debug\IO_Lab1.exe
 D:\GitHub\TCP_TicTacToe\TCPServer\obj\Debug\IO_Lab1.pdb
 D:\GitHub\TCP_TicTacToe\TCPServer\bin\Debug\Newtonsoft.Json.dll
 D:\GitHub\TCP_TicTacToe\TCPServer\bin\Debug\Newtonsoft.Json.xml
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\TCPServer\bin\Debug\IO_Lab1.exe.config
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\TCPServer\bin\Debug\IO_Lab1.exe
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\TCPServer\bin\Debug\IO_Lab1.pdb
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\TCPServer\bin\Debug\BibliotekaKlas.dll
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\TCPServer\bin\Debug\Newtonsoft.Json.dll
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\TCPServer\bin\Debug\BibliotekaKlas.pdb
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\TCPServer\bin\Debug\Newtonsoft.Json.xml
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\TCPServer\obj\Debug\TCPServer.csprojAssemblyReference.cache
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\TCPServer\obj\Debug\TCPServer.csproj.CoreCompileInputs.cache
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\TCPServer\obj\Debug\TCPServer.csproj.CopyComplete
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\TCPServer\obj\Debug\IO_Lab1.exe
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\TCPServer\obj\Debug\IO_Lab1.pdb

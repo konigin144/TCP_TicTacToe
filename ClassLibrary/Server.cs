@@ -64,11 +64,20 @@ namespace ClassLibrary
         /// </summary>
         /// <param name="IP">IP address of the server instance.</param>
         /// <param name="port">Port number of the server instance.</param>
-        public Server(IPAddress IP, int port)
+        public Server(string IP, int port)
         {
             running = false;
-            IPAddress = IP;
             Port = port;
+
+            if (ValidateIPv4(IP))
+            {
+                iPAddress = IPAddress.Parse(IP);
+            }
+            else
+            {
+                throw new Exception("Invalid IP value.");
+            }
+
             if (!checkPort())
             {
                 Port = 2048;
@@ -86,6 +95,28 @@ namespace ClassLibrary
         {
             if (port < 1024 || port > 49151) return false;
             return true;
+        }
+        /// <summary>
+        /// This function will return false if ipString is not a valid ip address.
+        /// </summary>
+        /// <param name="ipString"></param>
+        /// <returns>An information wether the set IPAddress value is valid.</returns>
+        public bool ValidateIPv4(string ipString)
+        {
+            if (String.IsNullOrWhiteSpace(ipString))
+            {
+                return false;
+            }
+
+            string[] splitValues = ipString.Split('.');
+            if (splitValues.Length != 4)
+            {
+                return false;
+            }
+
+            byte tempForParsing;
+
+            return splitValues.All(r => byte.TryParse(r, out tempForParsing));
         }
 
         /// <summary>

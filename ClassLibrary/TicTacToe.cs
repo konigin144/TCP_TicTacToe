@@ -188,7 +188,7 @@ namespace ClassLibrary
         /// <param name="x">row chosen by user</param>
         /// <param name="y">column chosen by user</param>
         /// <returns>False if the game is finished. True otherwise</returns>
-        public bool playSingle(int x, int y)
+        public bool playSingle(int x, int y, ref int botX, ref int botY)
         {
             //Checks if user has chosen a proper space
             if (Grid[x, y] != ' ')
@@ -212,6 +212,8 @@ namespace ClassLibrary
                     rY = r.Next(3);
                     if (Grid[rX, rY] == ' ') break;
                 }
+                botX = rX;
+                botY = rY;
                 Grid[rX, rY] = 'o';
             }
 

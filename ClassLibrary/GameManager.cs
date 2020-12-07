@@ -14,6 +14,9 @@ namespace ClassLibrary
         Dictionary<TcpClient, string> waiting = new Dictionary<TcpClient, string>();
         Dictionary<TcpClient, string> allUsers = new Dictionary<TcpClient, string>();
 
+        delegate void RoomDelegate(ref bool state1, ref bool state2);
+        delegate void RoomManagementDelegate(GameRoom gameRoom, TcpClient client1, TcpClient client2, string clientname1, string clientname2);
+
         /// <summary>
         /// Handles waiting room, connects players to game rooms
         /// </summary>
@@ -55,30 +58,43 @@ namespace ClassLibrary
                                 string clientname2 = waiting.ElementAt(j).Value;
                                 waiting.Remove(waiting.ElementAt(j).Key);
                                 waiting.Remove(waiting.ElementAt(i).Key);
-                                bool state1 = false, state2 = false;
-                                gameRoom.Run(ref state1, ref state2);
-                                if (!state2)
-                                {
-                                    allUsers.Remove(client2);
-                                    client2.Close();
-                                }
-                                else
-                                {
-                                    waiting.Add(client2, clientname2);
-                                }
-                                if (!state1)
-                                {
-                                    allUsers.Remove(client1);
-                                    client1.Close();
-                                }
-                                else
-                                {
-                                    waiting.Add(client1, clientname1);
-                                }
+
+                                RoomManagementDelegate run2 = new RoomManagementDelegate(RoomManagement);
+                                var id = run2.BeginInvoke(gameRoom, client1, client2, clientname1, clientname2, null, null);
                             }
                         }
                     }     
                 }
+            }
+        }
+
+        void RoomManagement(GameRoom gameRoom, TcpClient client1, TcpClient client2, string clientname1, string clientname2)
+        {
+            bool state1 = false, state2 = false;
+            RoomDelegate run2 = new RoomDelegate(gameRoom.Run2);
+            var id = run2.BeginInvoke(ref state1, ref state2, null, null);
+            run2.EndInvoke(ref state1, ref state2, id);
+
+
+            //Console.WriteLine(state1 + " " + state2);
+
+            if (!state2)
+            {
+                allUsers.Remove(client2);
+                client2.Close();
+            }
+            else
+            {
+                waiting.Add(client2, clientname2);
+            }
+            if (!state1)
+            {
+                allUsers.Remove(client1);
+                client1.Close();
+            }
+            else
+            {
+                waiting.Add(client1, clientname1);
             }
         }
 
