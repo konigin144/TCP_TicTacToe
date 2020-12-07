@@ -19,3 +19,12 @@ D:\GitHub\TCP_TicTacToe\ClassLibrary\bin\Debug\BibliotekaKlas.pdb
 D:\GitHub\TCP_TicTacToe\ClassLibrary\bin\Debug\Newtonsoft.Json.dll
 D:\GitHub\TCP_TicTacToe\ClassLibrary\bin\Debug\Newtonsoft.Json.xml
 D:\GitHub\TCP_TicTacToe\ClassLibrary\obj\Debug\ClassLibrary.csproj.CopyComplete
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\ClassLibrary\bin\Debug\BibliotekaKlas.dll
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\ClassLibrary\bin\Debug\BibliotekaKlas.pdb
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\ClassLibrary\bin\Debug\Newtonsoft.Json.dll
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\ClassLibrary\bin\Debug\Newtonsoft.Json.xml
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\ClassLibrary\obj\Debug\ClassLibrary.csprojAssemblyReference.cache
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\ClassLibrary\obj\Debug\ClassLibrary.csproj.CoreCompileInputs.cache
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\ClassLibrary\obj\Debug\ClassLibrary.csproj.CopyComplete
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\ClassLibrary\obj\Debug\BibliotekaKlas.dll
+C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\ClassLibrary\obj\Debug\BibliotekaKlas.pdb

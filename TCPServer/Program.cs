@@ -15,7 +15,7 @@ namespace TCPServer
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            Server server = new ServerAsync(IPAddress.Parse("127.0.0.1"), 2048);
+            Server server = new ServerAsync("127.0.0.1", 2048);
             server.Start();
         }
     }

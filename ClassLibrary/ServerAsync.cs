@@ -17,7 +17,7 @@ namespace ClassLibrary
         public delegate void StartDelegate();
         public delegate void LoginDelegate2(TcpClient tcpClient);
 
-        public ServerAsync(IPAddress IP, int port) : base(IP, port) { }
+        public ServerAsync(string IP, int port) : base(IP, port) { }
 
         GameManager gameManager = new GameManager();
 
