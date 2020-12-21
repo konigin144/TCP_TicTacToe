@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -64,7 +65,10 @@ namespace ClassLibrary
                 {
                     if (dict.TryGetValue(username, out temp))
                     {
-                        if (temp.password == password)
+                        HashAlgorithm algorithm = SHA256.Create();
+                        var passHash = Encoding.ASCII.GetString(algorithm.ComputeHash(Encoding.UTF8.GetBytes(password)));
+
+                        if (temp.password == passHash)
                         {
                             myWriteBuffer = Encoding.ASCII.GetBytes("1");
                             networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
@@ -88,7 +92,9 @@ namespace ClassLibrary
                 {
                     if (!dict.TryGetValue(username, out temp))
                     {
-                        temp = new Ranking(password);
+                        HashAlgorithm algorithm = SHA256.Create();
+                        var passHash = Encoding.ASCII.GetString(algorithm.ComputeHash(Encoding.UTF8.GetBytes(password)));
+                        temp = new Ranking(passHash);
                         dict[username] = temp;
                         File.WriteAllText(@path, JsonConvert.SerializeObject(dict));
                         myWriteBuffer = Encoding.ASCII.GetBytes("1");
@@ -306,7 +312,7 @@ namespace ClassLibrary
                     }
                     else
                     {
-                        if (temp.password == input)
+                        if (temp.password.Equals(input))
                         {
                             myWriteBuffer = Encoding.ASCII.GetBytes("You've logged in!\r\n");
                             networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
