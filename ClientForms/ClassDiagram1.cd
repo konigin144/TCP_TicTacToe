@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ClientForms.ChooseForm">
+    <Position X="5.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAgCAAAACAAA4AAAAAHAABAAAAAA=</HashCode>
+      <FileName>ChooseForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientForms.Client">
+    <Position X="3.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgACAAAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Client.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientForms.GameForm">
+    <Position X="9" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAACAAABABAoCAAAACAMw7AAAAAAAABAAAQAA=</HashCode>
+      <FileName>GameForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientForms.GameMultiForm">
+    <Position X="10.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AGQAAAAgACAAABABAoCAAAACAMy7AAAghAAQRAAAQAA=</HashCode>
+      <FileName>GameMultiForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientForms.LoginForm">
+    <Position X="7.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAgASAAAgAAAgCAAAAjAAQAAAAAgAAABAgAAAA=</HashCode>
+      <FileName>LoginForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientForms.MainForm">
+    <Position X="5.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAACAAAACAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>MainForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientForms.Program">
+    <Position X="3.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientForms.WaitingForm">
+    <Position X="7.25" Y="5" Width="1.5" />
+    <NestedTypes>
+      <Delegate Name="ClientForms.WaitingForm.WaitDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>WaitingForm.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAABAAAgCAAAACAAAAAAAEAAAABAAAAAA=</HashCode>
+      <FileName>WaitingForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

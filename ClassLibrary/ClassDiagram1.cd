@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ClassLibrary.GameManager">
+    <Position X="7.75" Y="2" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="ClassLibrary.GameManager.RoomDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GameManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="ClassLibrary.GameManager.RoomManagementDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GameManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAABAACAAAAAAAAEAAAAAAAAAAAABAAAAAACAAAAAEA=</HashCode>
+      <FileName>GameManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClassLibrary.GameRoom">
+    <Position X="6" Y="2" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="ClassLibrary.GameRoom.TurnDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GameRoom.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="ClassLibrary.GameRoom.WaitDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GameRoom.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="ClassLibrary.GameRoom.PlayAgainDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GameRoom.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="ClassLibrary.GameRoom.PlayAgainDelegate2" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GameRoom.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAgAhAAADBAAAAAAAAAAAAEAAAAAAAAIBAAAQAAkAQI=</HashCode>
+      <FileName>GameRoom.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClassLibrary.Ranking">
+    <Position X="9.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AARAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAgIgAIAAA=</HashCode>
+      <FileName>Ranking.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClassLibrary.Server">
+    <Position X="2.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIEAAAgADAAIAAACAAAAAAICAgAAAgAAAAAEAACAII=</HashCode>
+      <FileName>Server.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClassLibrary.ServerAsync">
+    <Position X="4.25" Y="2" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="ClassLibrary.ServerAsync.LoginDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ServerAsync.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="ClassLibrary.ServerAsync.StartDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ServerAsync.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="ClassLibrary.ServerAsync.LoginDelegate2" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ServerAsync.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AEEAAAAAQCAAAAAAAAAAAAAIAAAAABAAAAAQAAAEAAI=</HashCode>
+      <FileName>ServerAsync.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClassLibrary.TicTacToe">
+    <Position X="9.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEgAAAAEAAAAAAAAhAAAAAAAAAAAAAAAABAQAAAA=</HashCode>
+      <FileName>TicTacToe.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

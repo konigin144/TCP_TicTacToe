@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Web.Script.Serialization;
 
 namespace ClassLibrary
@@ -176,8 +177,17 @@ namespace ClassLibrary
             temp.updateRatio();
             dict[username2] = temp;
 
+            //Sorts dictionary by ratio DESC
+            Dictionary<string, Ranking> sortDict = new Dictionary<string, Ranking>();
+            foreach (var el in dict.OrderByDescending(value => value.Value.ratio))
+            {
+                Console.WriteLine(el.Value.ratio);
+                sortDict.Add(el.Key, dict[el.Key]);
+            }
+
+
             //Saves updated ranking to the file
-            File.WriteAllText(@path, JsonConvert.SerializeObject(dict));
+            File.WriteAllText(@path, JsonConvert.SerializeObject(sortDict));
 
             return dict;
         }
