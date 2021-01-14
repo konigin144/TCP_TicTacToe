@@ -9,4 +9,5 @@ Each branch contains other version:
 **Lab4** - client application with Windows Forms 
 
 C# with .NET Framework 4.7.2. Json.NET is required.  
-Users can connect to the server with PuTTy.
+Lab1 - Lab3: Users can connect to the server with PuTTy.  
+Lab4 - Lab5: Client application is recommended to the connection to the server.  
