@@ -14,14 +14,13 @@ namespace ClientForms
 {
     public partial class GameForm : Form
     {
-        Client client;
         MainForm mainForm;
 
-        public GameForm(Client client, MainForm mainForm)
+        public GameForm(MainForm mainForm)
         {
             InitializeComponent();
-            this.client = client;
             this.mainForm = mainForm;
+            this.mainForm.Text = this.mainForm.client.username + " vs bot";
         }
 
         private void button_Click(object sender, EventArgs e)
@@ -32,9 +31,9 @@ namespace ClientForms
             var buttonId = ((Button)sender).Name;
             
             byte[] myWriteBuffer = Encoding.ASCII.GetBytes(buttonId[6]+" "+buttonId[8]);
-            client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            mainForm.client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
 
-            client.networkStream.Read(buffer, 0, buffer.Length);
+            mainForm.client.networkStream.Read(buffer, 0, buffer.Length);
             string response = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty);
             if (response[0].Equals('1'))
             {
@@ -76,10 +75,10 @@ namespace ClientForms
         private void button10_Click(object sender, EventArgs e)
         {
             byte[] myWriteBuffer = Encoding.ASCII.GetBytes("1");
-            client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            mainForm.client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
 
 
-            GameForm gameForm = new GameForm(client, mainForm);
+            GameForm gameForm = new GameForm(mainForm);
             gameForm.TopLevel = false;
             mainForm.panel1.Controls.Clear();
             mainForm.panel1.Controls.Add(gameForm);
@@ -91,7 +90,7 @@ namespace ClientForms
         private void button11_Click(object sender, EventArgs e)
         {
             byte[] myWriteBuffer = Encoding.ASCII.GetBytes("0");
-            client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            mainForm.client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
             Application.Exit();
         }
     }

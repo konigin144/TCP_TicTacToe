@@ -11,8 +11,10 @@ namespace ClassLibrary
 {
     class GameManager
     {
-        Dictionary<TcpClient, string> waiting = new Dictionary<TcpClient, string>();
-        Dictionary<TcpClient, string> allUsers = new Dictionary<TcpClient, string>();
+        //Dictionary<TcpClient, string> waiting = new Dictionary<TcpClient, string>();
+        //Dictionary<TcpClient, string> allUsers = new Dictionary<TcpClient, string>();
+        List<(TcpClient Key, string Value)> waiting = new List<(TcpClient, string)> { };
+        List<(TcpClient Key, string Value)> allUsers = new List<(TcpClient, string)> { };
 
         delegate void RoomDelegate(ref bool state1, ref bool state2);
         delegate void RoomManagementDelegate(GameRoom gameRoom, TcpClient client1, TcpClient client2, string clientname1, string clientname2);
@@ -26,8 +28,14 @@ namespace ClassLibrary
             {
                 if (waiting.Count > 1)
                 {
+                    Console.WriteLine("---");
+                    foreach ((TcpClient, string) u in waiting)
+                    {
+                        Console.WriteLine(u);
+                    }
+                    Console.WriteLine("---");
                     Dictionary<string, Ranking> dict = new Dictionary<string, Ranking>();
-                    string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + "\\ranking.json";
+                    string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + "\\database.json";
                     if (!File.Exists(path))
                     {
                         FileStream fs = File.Create(path);
@@ -56,8 +64,11 @@ namespace ClassLibrary
                                 TcpClient client2 = waiting.ElementAt(j).Key;
                                 string clientname1 = waiting.ElementAt(i).Value;
                                 string clientname2 = waiting.ElementAt(j).Value;
-                                waiting.Remove(waiting.ElementAt(j).Key);
-                                waiting.Remove(waiting.ElementAt(i).Key);
+
+                                removeClient("waiting", waiting.ElementAt(j).Key);
+                                removeClient("waiting", waiting.ElementAt(i).Key);
+
+                                Console.WriteLine(clientname1 + " " + clientname2);
 
                                 RoomManagementDelegate run2 = new RoomManagementDelegate(RoomManagement);
                                 var id = run2.BeginInvoke(gameRoom, client1, client2, clientname1, clientname2, null, null);
@@ -76,37 +87,67 @@ namespace ClassLibrary
             run2.EndInvoke(ref state1, ref state2, id);
 
 
-            //Console.WriteLine(state1 + " " + state2);
-
+            Console.WriteLine(state1 + " " + state2);
+            //Finished game handling
             if (!state2)
             {
-                allUsers.Remove(client2);
+                removeClient("allUsers", client2);
+
                 client2.Close();
             }
             else
             {
-                waiting.Add(client2, clientname2);
+                waiting.Add((client2, clientname2));
             }
             if (!state1)
             {
-                allUsers.Remove(client1);
+                removeClient("allUsers", client1);
                 client1.Close();
             }
             else
             {
-                waiting.Add(client1, clientname1);
+                waiting.Add((client1, clientname1));
             }
         }
 
         /// <summary>
         /// Adds client to waiting room
         /// </summary>
+        /// <param name="queue">0 - adds to allUsers, 1 - adds to waiting, 2 - adds to both</param>
         /// <param name="tcpClient">User object</param>
         /// <param name="username">User name</param>
-        public void AddClient(TcpClient tcpClient, string username)
+        public void AddClient(int queue, TcpClient tcpClient, string username)
         {
-            allUsers.Add(tcpClient, username);
-            waiting.Add(tcpClient, username);
+            if (queue == 0)
+                allUsers.Add((tcpClient, username));
+            else if (queue == 1)
+                waiting.Add((tcpClient, username));
+            else
+            {
+                allUsers.Add((tcpClient, username));
+                waiting.Add((tcpClient, username));
+            }
+        }
+
+        private void removeClient(string list, TcpClient tcpClient)
+        {
+            if (list == "waiting")
+            {
+                int index = waiting.FindIndex(t => t.Key == tcpClient);
+                if (index != -1)
+                {
+                    waiting.RemoveAt(index);
+                }
+            }
+            else
+            {
+                int index = allUsers.FindIndex(t => t.Key == tcpClient);
+                if (index != -1)
+                {
+                    allUsers.RemoveAt(index);
+                }
+            }
+
         }
 
         /// <summary>
@@ -116,8 +157,8 @@ namespace ClassLibrary
         /// <returns></returns>
         public bool IsLogged(string username)
         {
-            if (allUsers.ContainsValue(username)) return true;
-            else return false;
+            if (allUsers.FindIndex(t => t.Value == username) == -1) return false;
+            else return true;
         }
     }
 }

@@ -13,24 +13,24 @@ namespace ClientForms
 {
     public partial class ChooseForm : Form
     {
-        Client client;
         MainForm mainForm;
-        public ChooseForm(Client client, MainForm mainForm)
+        public ChooseForm(MainForm mainForm)
         {
-            this.client = client;
             InitializeComponent();
             this.mainForm = mainForm;
+            this.mainForm.Text = this.mainForm.client.username;
+            helloLabel.Text = "Hello " + mainForm.client.username + "!";
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             string gametype = "single";
             byte[] myWriteBuffer = Encoding.ASCII.GetBytes(gametype);
-            client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            mainForm.client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
 
 
 
-            GameForm gameForm = new GameForm(client, mainForm);
+            GameForm gameForm = new GameForm(mainForm);
             gameForm.TopLevel = false;
             mainForm.panel1.Controls.Clear();
             mainForm.panel1.Controls.Add(gameForm);
@@ -43,11 +43,11 @@ namespace ClientForms
             Console.WriteLine("multi");
             string gametype = "multi";
             byte[] myWriteBuffer = Encoding.ASCII.GetBytes(gametype);
-            client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            mainForm.client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
 
 
 
-            GameMultiForm gameForm = new GameMultiForm(client, true, mainForm);
+            GameMultiForm gameForm = new GameMultiForm(mainForm);
             gameForm.TopLevel = false;
             mainForm.panel1.Controls.Clear();
             mainForm.panel1.Controls.Add(gameForm);
@@ -68,10 +68,10 @@ namespace ClientForms
         {
             string msg = "rank";
             byte[] myWriteBuffer = Encoding.ASCII.GetBytes(msg);
-            client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            mainForm.client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
 
             byte[] buffer = new byte[512];
-            client.networkStream.Read(buffer, 0, buffer.Length);
+            mainForm.client.networkStream.Read(buffer, 0, buffer.Length);
             string response = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty);
 
             string message = response;

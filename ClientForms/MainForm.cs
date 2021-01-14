@@ -13,10 +13,14 @@ namespace ClientForms
 {
     public partial class MainForm : Form
     {
+        public Client client;
+        //public string playerName;
+        //public string enemyName;
         public MainForm(Client client)
         {
+            this.client = client;
             InitializeComponent();
-            LoginForm loginForm = new LoginForm(client, this);
+            LoginForm loginForm = new LoginForm(this);
             loginForm.TopLevel = false;
             this.panel1.Controls.Add(loginForm);
             loginForm.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;

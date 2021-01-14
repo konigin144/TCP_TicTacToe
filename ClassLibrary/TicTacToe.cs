@@ -118,7 +118,7 @@ namespace ClassLibrary
             Dictionary<string, Ranking> dict = new Dictionary<string, Ranking>();
 
             //Get project path
-            string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName+"\\ranking.json";
+            string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName+"\\database.json";
 
             //Create a file if does not exist
             if (!File.Exists(path))
