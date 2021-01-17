@@ -10,32 +10,31 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using ClassLibrary;
+
 namespace ClientForms
 {
     public partial class GameForm : Form
     {
-        Client client;
         MainForm mainForm;
 
-        public GameForm(Client client, MainForm mainForm)
+        public GameForm(MainForm mainForm)
         {
             InitializeComponent();
-            this.client = client;
             this.mainForm = mainForm;
+            this.mainForm.Text = this.mainForm.client.username + " vs bot";
         }
 
         private void button_Click(object sender, EventArgs e)
         {
             (sender as Button).Text = "x";
             (sender as Button).Enabled = false;
-            byte[] buffer = new byte[16];
-            var buttonId = ((Button)sender).Name;
-            
-            byte[] myWriteBuffer = Encoding.ASCII.GetBytes(buttonId[6]+" "+buttonId[8]);
-            client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
 
-            client.networkStream.Read(buffer, 0, buffer.Length);
-            string response = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty);
+            var buttonId = ((Button)sender).Name;
+
+            Packet.Send(mainForm.client.networkStream, buttonId[6] + " " + buttonId[8]);
+
+            string response = Packet.Read(mainForm.client.networkStream);
             if (response[0].Equals('1'))
             {
                 if (response[2].Equals('1'))
@@ -62,6 +61,7 @@ namespace ClientForms
                 label2.Visible = true;
                 button10.Visible = true;
                 button11.Visible = true;
+                button12.Visible = true;
             }
             else
             {
@@ -69,17 +69,14 @@ namespace ClientForms
                 Control ctn = this.Controls[name];
                 ctn.Text = "o";
                 ctn.Enabled = false;
-
             }           
         }
 
         private void button10_Click(object sender, EventArgs e)
         {
-            byte[] myWriteBuffer = Encoding.ASCII.GetBytes("1");
-            client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            Packet.Send(mainForm.client.networkStream, "1");
 
-
-            GameForm gameForm = new GameForm(client, mainForm);
+            GameForm gameForm = new GameForm(mainForm);
             gameForm.TopLevel = false;
             mainForm.panel1.Controls.Clear();
             mainForm.panel1.Controls.Add(gameForm);
@@ -90,9 +87,15 @@ namespace ClientForms
 
         private void button11_Click(object sender, EventArgs e)
         {
-            byte[] myWriteBuffer = Encoding.ASCII.GetBytes("0");
-            client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            Packet.Send(mainForm.client.networkStream, "0");
             Application.Exit();
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            Packet.Send(mainForm.client.networkStream, "0");
+
+            Application.Restart();
         }
     }
 }

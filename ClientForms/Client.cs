@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClientForms
 {
+    /// <summary>
+    /// Class containing client's info
+    /// </summary>
     public class Client
     {
         public TcpClient tcpClient;

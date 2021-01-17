@@ -1,10 +1,8 @@
-﻿using ClassLibrary;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web.Script.Serialization;
 
 namespace ClassLibrary
 {
@@ -118,7 +116,7 @@ namespace ClassLibrary
             Dictionary<string, Ranking> dict = new Dictionary<string, Ranking>();
 
             //Get project path
-            string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName+"\\ranking.json";
+            string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName+"\\database.json";
 
             //Create a file if does not exist
             if (!File.Exists(path))
@@ -181,7 +179,6 @@ namespace ClassLibrary
             Dictionary<string, Ranking> sortDict = new Dictionary<string, Ranking>();
             foreach (var el in dict.OrderByDescending(value => value.Value.ratio))
             {
-                Console.WriteLine(el.Value.ratio);
                 sortDict.Add(el.Key, dict[el.Key]);
             }
 
