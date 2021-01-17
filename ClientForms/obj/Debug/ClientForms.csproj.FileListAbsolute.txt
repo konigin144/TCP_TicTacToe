@@ -27,3 +27,8 @@ C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\ClientForms\obj\Debug\Cli
 C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.csproj.CoreCompileInputs.cache
 C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.exe
 C:\Users\KonradT\Source\Repos\konigin144\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.pdb
+D:\GitHub\TCP_TicTacToe\ClientForms\bin\Debug\BibliotekaKlas.dll
+D:\GitHub\TCP_TicTacToe\ClientForms\bin\Debug\Newtonsoft.Json.dll
+D:\GitHub\TCP_TicTacToe\ClientForms\bin\Debug\BibliotekaKlas.pdb
+D:\GitHub\TCP_TicTacToe\ClientForms\bin\Debug\Newtonsoft.Json.xml
+D:\GitHub\TCP_TicTacToe\ClientForms\obj\Debug\ClientForms.csproj.CopyComplete

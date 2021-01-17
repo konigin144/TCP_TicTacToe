@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO.Ports;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+
+using ClassLibrary;
 
 namespace ClientForms
 {
@@ -34,23 +26,21 @@ namespace ClientForms
 
         private async void multiInit()
         {
-            byte[] buffer = new byte[16];
-            System.Threading.Thread.Sleep(10);
-            await mainForm.client.networkStream.ReadAsync(buffer, 0, buffer.Length);
-            string[] initResponse = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty).Split(' ');
+            string elo = await Packet.ReadAsync(mainForm.client.networkStream);
+            string[] initResponse = elo.Replace("\0", string.Empty).Split(' ');
             mainForm.client.enemyUsername = initResponse[1];
             this.mainForm.Text = this.mainForm.client.username + " vs " + this.mainForm.client.enemyUsername;
             label1.Text = "You're playing with " + mainForm.client.enemyUsername;
            
-            byte[] myWriteBuffer = Encoding.ASCII.GetBytes("sync");
-            mainForm.client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            Packet.Send(mainForm.client.networkStream, "sync");
+
             if (initResponse[0] == "0")
             {
                 label3.Text = "Enemy turn";
                 playerID = 0;
-                await mainForm.client.networkStream.ReadAsync(buffer, 0, buffer.Length);
-                string response = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty);
-                
+
+                string response = await Packet.ReadAsync(mainForm.client.networkStream);
+
                 string name = "button" + response[2] + "_" + response[4];
                 Control ctn = this.Controls[name];
                 ctn.Text = "x";
@@ -65,7 +55,6 @@ namespace ClientForms
                 label3.Text = "Your turn";
                 playerID = 1;
             }
-            Console.WriteLine("multi init end");
             GetMsg(this, new EventArgs());
         }
 
@@ -80,11 +69,10 @@ namespace ClientForms
             var buttonId = ((Button)sender).Name;
             buttonsEnabled[chToInt(buttonId[6]), chToInt(buttonId[8])] = false;
             lockButtons();
-            byte[] myWriteBuffer = Encoding.ASCII.GetBytes(buttonId[6] + " " + buttonId[8]);
-            mainForm.client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            Packet.Send(mainForm.client.networkStream, buttonId[6] + " " + buttonId[8]);
 
-            await mainForm.client.networkStream.ReadAsync(buffer, 0, buffer.Length);
-            string response = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty);
+            string response = await Packet.ReadAsync(mainForm.client.networkStream);
+
             if (response[0].Equals('2')) //dla zwycięzcy i draw   //response na swój ruch
             {
                 if (response[2].Equals('1'))
@@ -125,8 +113,7 @@ namespace ClientForms
 
         private void button10_Click(object sender, EventArgs e)
         {
-            byte[] myWriteBuffer = Encoding.ASCII.GetBytes("yes");
-            mainForm.client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            Packet.Send(mainForm.client.networkStream, "yes");
 
             GameMultiForm gameForm = new GameMultiForm(mainForm);
             gameForm.TopLevel = false;
@@ -139,15 +126,14 @@ namespace ClientForms
 
         private void button11_Click(object sender, EventArgs e)
         {
-            byte[] myWriteBuffer = Encoding.ASCII.GetBytes("no");
-            mainForm.client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            Packet.Send(mainForm.client.networkStream, "no");
+
             Application.Exit();
         }
 
         private void button12_Click(object sender, EventArgs e)
         {
-            byte[] myWriteBuffer = Encoding.ASCII.GetBytes("rev");
-            mainForm.client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            Packet.Send(mainForm.client.networkStream, "rev");
 
             GameMultiForm gameForm = new GameMultiForm(mainForm);
             gameForm.TopLevel = false;
@@ -162,15 +148,11 @@ namespace ClientForms
 
         protected virtual void GetMsg(object sender, EventArgs e)
         {
-            byte[] buffer = new byte[16];
-
-            mainForm.client.networkStream.Read(buffer, 0, 3);
-            string response = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty);
+            string response = Packet.Read(mainForm.client.networkStream, 3);
 
             if (response == "end")
             {
-                mainForm.client.networkStream.Read(buffer, 0, buffer.Length);
-                response = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty);
+                response = Packet.Read(mainForm.client.networkStream);
                 label1.Text = "";
                 if (response[0].Equals('2')) // dla losera i draw  //response na cuchy ruch
 
@@ -207,13 +189,9 @@ namespace ClientForms
 
         private void button13_Click(object sender, EventArgs e)
         {
-            string msg = "rank";
-            byte[] myWriteBuffer = Encoding.ASCII.GetBytes(msg);
-            mainForm.client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            Packet.Send(mainForm.client.networkStream, "rank");
 
-            byte[] buffer = new byte[512];
-            mainForm.client.networkStream.Read(buffer, 0, buffer.Length);
-            string response = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty);
+            string response = Packet.Read(mainForm.client.networkStream);
 
             string message = response;
             string title = "Ranking";
@@ -240,17 +218,9 @@ namespace ClientForms
 
         private void button14_Click(object sender, EventArgs e)
         {
-            byte[] myWriteBuffer = Encoding.ASCII.GetBytes("no");
-            mainForm.client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+            Packet.Send(mainForm.client.networkStream, "0");
 
             Application.Restart();
-            /*LoginForm loginForm = new LoginForm(mainForm);
-            loginForm.TopLevel = false;
-            mainForm.panel1.Controls.Clear();
-            mainForm.panel1.Controls.Add(loginForm);
-            loginForm.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            loginForm.Dock = DockStyle.Fill;
-            loginForm.Show();*/
         }
     }
 }

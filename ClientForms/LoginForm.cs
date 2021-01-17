@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Security.Cryptography;
+
+using ClassLibrary;
 
 namespace ClientForms
 {
@@ -37,13 +32,10 @@ namespace ClientForms
             HashAlgorithm algorithm = SHA256.Create();
             var passHash = Encoding.ASCII.GetString(algorithm.ComputeHash(Encoding.UTF8.GetBytes(passwordBox.Text)));
             string usernamePassword = mode+" " + usernameBox.Text + " " + passHash;
-            byte[] myWriteBuffer = Encoding.ASCII.GetBytes(usernamePassword);
-            mainForm.client.networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
 
-            byte[] buffer = new byte[16];
+            Packet.Send(mainForm.client.networkStream, usernamePassword);
 
-            mainForm.client.networkStream.Read(buffer, 0, buffer.Length);
-            string response = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty);
+            string response = Packet.Read(mainForm.client.networkStream);
             if (response == "1")
             {
                 mainForm.client.username = usernameBox.Text;

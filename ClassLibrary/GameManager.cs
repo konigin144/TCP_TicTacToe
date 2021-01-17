@@ -11,8 +11,6 @@ namespace ClassLibrary
 {
     class GameManager
     {
-        //Dictionary<TcpClient, string> waiting = new Dictionary<TcpClient, string>();
-        //Dictionary<TcpClient, string> allUsers = new Dictionary<TcpClient, string>();
         List<(TcpClient Key, string Value)> waiting = new List<(TcpClient, string)> { };
         List<(TcpClient Key, string Value)> allUsers = new List<(TcpClient, string)> { };
 
@@ -28,12 +26,6 @@ namespace ClassLibrary
             {
                 if (waiting.Count > 1)
                 {
-                    Console.WriteLine("---");
-                    foreach ((TcpClient, string) u in waiting)
-                    {
-                        Console.WriteLine(u);
-                    }
-                    Console.WriteLine("---");
                     Dictionary<string, Ranking> dict = new Dictionary<string, Ranking>();
                     string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + "\\database.json";
                     if (!File.Exists(path))
@@ -68,8 +60,6 @@ namespace ClassLibrary
                                 removeClient("waiting", waiting.ElementAt(j).Key);
                                 removeClient("waiting", waiting.ElementAt(i).Key);
 
-                                Console.WriteLine(clientname1 + " " + clientname2);
-
                                 RoomManagementDelegate run2 = new RoomManagementDelegate(RoomManagement);
                                 var id = run2.BeginInvoke(gameRoom, client1, client2, clientname1, clientname2, null, null);
                             }
@@ -81,13 +71,18 @@ namespace ClassLibrary
 
         void RoomManagement(GameRoom gameRoom, TcpClient client1, TcpClient client2, string clientname1, string clientname2)
         {
+            
             bool state1 = false, state2 = false;
-            RoomDelegate run2 = new RoomDelegate(gameRoom.Run2);
-            var id = run2.BeginInvoke(ref state1, ref state2, null, null);
-            run2.EndInvoke(ref state1, ref state2, id);
+            try
+            {
+                RoomDelegate run2 = new RoomDelegate(gameRoom.Run);
+                var id = run2.BeginInvoke(ref state1, ref state2, null, null);
+                run2.EndInvoke(ref state1, ref state2, id);
+            } catch(Exception e)
+            {
+                Console.WriteLine("Error occured: RoomManagement");
+            }
 
-
-            Console.WriteLine(state1 + " " + state2);
             //Finished game handling
             if (!state2)
             {
@@ -129,7 +124,7 @@ namespace ClassLibrary
             }
         }
 
-        private void removeClient(string list, TcpClient tcpClient)
+        public void removeClient(string list, TcpClient tcpClient)
         {
             if (list == "waiting")
             {
@@ -147,7 +142,6 @@ namespace ClassLibrary
                     allUsers.RemoveAt(index);
                 }
             }
-
         }
 
         /// <summary>

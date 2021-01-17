@@ -1,10 +1,8 @@
-﻿using ClassLibrary;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web.Script.Serialization;
 
 namespace ClassLibrary
 {
@@ -181,7 +179,6 @@ namespace ClassLibrary
             Dictionary<string, Ranking> sortDict = new Dictionary<string, Ranking>();
             foreach (var el in dict.OrderByDescending(value => value.Value.ratio))
             {
-                Console.WriteLine(el.Value.ratio);
                 sortDict.Add(el.Key, dict[el.Key]);
             }
 

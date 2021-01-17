@@ -12,13 +12,13 @@ namespace ClassLibrary
     class GameRoom
     {
         TicTacToe game;
+
         string username1;
         string username2;
 
         NetworkStream networkStream1;
         NetworkStream networkStream2;
 
-        bool turnFinishedFlag;
         delegate bool TurnDelegate(NetworkStream networkStream, int playerNum, TicTacToe game);
         delegate void WaitDelegate(NetworkStream networkStream);
         delegate bool PlayAgainDelegate(NetworkStream networkStream, bool x);
@@ -33,14 +33,13 @@ namespace ClassLibrary
             this.username2 = username2;
         }
 
-        bool PlayerTurn2(NetworkStream networkStream, int playerNum, ref int x, ref int y, TicTacToe game)
+        bool PlayerTurn(NetworkStream networkStream, int playerNum, ref int x, ref int y, TicTacToe game)
         {
+
             string userInput;
             bool gameContinue = true;
 
-            byte[] buffer = new byte[16];
-            networkStream.Read(buffer, 0, buffer.Length);
-            userInput = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty);
+            userInput = Packet.Read(networkStream);
 
             x = userInput[0] - 48;
             y = userInput[2] - 48;
@@ -55,18 +54,14 @@ namespace ClassLibrary
             return gameContinue;
         }
 
-        int PlayAgain2(NetworkStream networkStream)
+        int PlayAgain(NetworkStream networkStream)
         {
-            byte[] myWriteBuffer;
-            byte[] buffer = new byte[512];
             string userInput;
 
             //buffer = new byte[16];
             while (true)
             {
-                buffer = new byte[16];
-                networkStream.Read(buffer, 0, buffer.Length);
-                userInput = Encoding.ASCII.GetString(buffer).Replace("\0", string.Empty);
+                userInput = Packet.Read(networkStream);
                 if (userInput == "no")
                 {
                     return 0;
@@ -79,7 +74,6 @@ namespace ClassLibrary
 
                 else
                 {
-                    Console.WriteLine("ranking");
                     Dictionary<string, Ranking> dict = new Dictionary<string, Ranking>();
                     string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + "\\database.json";
                     using (StreamReader r = File.OpenText(path))
@@ -92,18 +86,13 @@ namespace ClassLibrary
                     {
                         output += entry.Key + "\t\t" + entry.Value.wins + "\t" + entry.Value.loses + "\t" + entry.Value.draws + "\t" + entry.Value.ratio + "\n";
                     }
-                    myWriteBuffer = Encoding.ASCII.GetBytes(output);
-                    networkStream.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-
-                    //return 3;
+                    Packet.Send(networkStream, output);
                 }
             }
         }
 
-        public void Run2(ref bool state1, ref bool state2)
+        public void Run(ref bool state1, ref bool state2)
         {
-            byte[] buffer = new byte[16];
-            byte[] myWriteBuffer;
             int x = 0, y = 0;
             while (true)
             {
@@ -112,55 +101,38 @@ namespace ClassLibrary
                     //Variables declaration
                     TicTacToe game = new TicTacToe();
 
-                    myWriteBuffer = Encoding.ASCII.GetBytes("0 " + username1);
-                    networkStream2.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-                    myWriteBuffer = Encoding.ASCII.GetBytes("1 " + username2);
-                    networkStream1.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                    Packet.Send(networkStream2, "0 " + username1);
+                    Packet.Send(networkStream1, "1 " + username2);
 
-                    networkStream1.Read(buffer, 0, buffer.Length);
-                    buffer = new byte[512];
-                    networkStream2.Read(buffer, 0, buffer.Length);
-                    buffer = new byte[512];
+                    Packet.Read(networkStream1);
+                    Packet.Read(networkStream2);
 
-                    myWriteBuffer = Encoding.ASCII.GetBytes("elo");
-                    networkStream1.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                    Packet.Send(networkStream1, "elo");
 
                     //Main game loop
                     while (true)
                     {
-                        turnFinishedFlag = false;
-
-                        bool turnResult = PlayerTurn2(networkStream1, 1, ref x, ref y, game);
-                        myWriteBuffer = Encoding.ASCII.GetBytes("0 " + x + " " + y);
-                        networkStream2.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                        bool turnResult = PlayerTurn(networkStream1, 1, ref x, ref y, game);
+                        Packet.Send(networkStream2, "0 " + x + " " + y);
 
                         string msg;
                         if (!turnResult)
                             msg = "end";
                         else msg = "con";
 
-                        myWriteBuffer = Encoding.ASCII.GetBytes(msg);
-                        networkStream2.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-
-                        turnFinishedFlag = true;
+                        Packet.Send(networkStream2, msg);
 
                         if (!turnResult) break;
                         else
                         {
-                            turnFinishedFlag = false;
-
-                            turnResult = PlayerTurn2(networkStream2, 2, ref x, ref y, game);
-                            myWriteBuffer = Encoding.ASCII.GetBytes("0 " + x + " " + y);
-                            networkStream1.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-
-                            turnFinishedFlag = true;
+                            turnResult = PlayerTurn(networkStream2, 2, ref x, ref y, game);
+                            Packet.Send(networkStream1, "0 " + x + " " + y);
 
                             if (!turnResult)
                                 msg = "end";
                             else msg = "con";
 
-                            myWriteBuffer = Encoding.ASCII.GetBytes(msg);
-                            networkStream1.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                            Packet.Send(networkStream1, msg);
 
                             if (!turnResult) break;
                         }
@@ -169,39 +141,32 @@ namespace ClassLibrary
                     //Game is finished
                     if (game.State == 1)
                     {
-                        myWriteBuffer = Encoding.ASCII.GetBytes("2 1");
-                        networkStream1.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-                        myWriteBuffer = Encoding.ASCII.GetBytes("2 2");
-                        networkStream2.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                        Packet.Send(networkStream1, "2 1");
+                        Packet.Send(networkStream2, "2 2");
                     }
                     else if (game.State == 2)
                     {
-                        myWriteBuffer = Encoding.ASCII.GetBytes("2 2");
-                        networkStream1.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-                        myWriteBuffer = Encoding.ASCII.GetBytes("2 1");
-                        networkStream2.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                        Packet.Send(networkStream1, "2 2");
+                        Packet.Send(networkStream2, "2 1");
                     }
                     else if (game.State == 3)
                     {
-                        myWriteBuffer = Encoding.ASCII.GetBytes("2 3");
-                        networkStream1.Write(myWriteBuffer, 0, myWriteBuffer.Length);
-                        networkStream2.Write(myWriteBuffer, 0, myWriteBuffer.Length);
+                        Packet.Send(networkStream1, "2 3");
+                        Packet.Send(networkStream2, "2 3");
                     }
 
                     //Updates and prints ranking
                     Dictionary<string, Ranking> rankDict = game.updateRanking(username1, username2);
-                    //PrintRanking(networkStream1, rankDict);
-                    //PrintRanking(networkStream2, rankDict);
 
                     //Play again question
-                    PlayAgainDelegate2 playAgain1 = new PlayAgainDelegate2(PlayAgain2);
-                    PlayAgainDelegate2 playAgain2 = new PlayAgainDelegate2(PlayAgain2);
+                    PlayAgainDelegate2 playAgain1 = new PlayAgainDelegate2(PlayAgain);
+                    PlayAgainDelegate2 playAgain2 = new PlayAgainDelegate2(PlayAgain);
                     var id = playAgain1.BeginInvoke(networkStream1, null, null);
                     var id2 = playAgain2.BeginInvoke(networkStream2, null, null);
                     int pa1 = playAgain1.EndInvoke(id);
                     int pa2 = playAgain2.EndInvoke(id2);
 
-                    if (pa1==0 && pa2!=0)
+                    if (pa1 == 0 && pa2 != 0)
                     {
                         state1 = false;
                         state2 = true;

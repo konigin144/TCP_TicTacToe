@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="GameManager.cs" />
     <Compile Include="GameRoom.cs" />
+    <Compile Include="Packet.cs" />
     <Compile Include="Ranking.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="ServerAsync.cs" />
