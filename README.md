@@ -13,7 +13,7 @@ C# with .NET Framework 4.7.2. Json.NET is required.
 Lab1 - Lab3: Users can connect to the server with PuTTy.  
 Lab4 - Lab5: Client application is recommended to the connection to the server.  
 
-Authors:
+Authors:  
 https://github.com/CiechanM  
 https://github.com/konigin144  
 https://github.com/KonyPL  
